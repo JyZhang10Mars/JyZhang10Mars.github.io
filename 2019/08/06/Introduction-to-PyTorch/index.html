@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Introducing the basics of building a deep learning project using PyTorch, with sample code. Written by Mars at 2019/7/31 20:30   Prerequisites:AutogradPyTorch是一个基于python的科学计算包，主要针对两类人群：  作为NumPy的替代品，可">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Introduction to PyTorch">
+<meta property="og:url" content="http://yoursite.com/2019/08/06/Introduction-to-PyTorch/index.html">
+<meta property="og:site_name" content="MARS">
+<meta property="og:description" content="Introducing the basics of building a deep learning project using PyTorch, with sample code. Written by Mars at 2019/7/31 20:30   Prerequisites:AutogradPyTorch是一个基于python的科学计算包，主要针对两类人群：  作为NumPy的替代品，可">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2019/08/06/Introduction-to-PyTorch/Introduction-to-PyTorch/output_73_0.jpeg">
+<meta property="og:updated_time" content="2019-08-06T08:24:09.950Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Introduction to PyTorch">
+<meta name="twitter:description" content="Introducing the basics of building a deep learning project using PyTorch, with sample code. Written by Mars at 2019/7/31 20:30   Prerequisites:AutogradPyTorch是一个基于python的科学计算包，主要针对两类人群：  作为NumPy的替代品，可">
+<meta name="twitter:image" content="http://yoursite.com/2019/08/06/Introduction-to-PyTorch/Introduction-to-PyTorch/output_73_0.jpeg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/08/06/Introduction-to-PyTorch/">
+
+
+
+
+
+  <title>Introduction to PyTorch | MARS</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">MARS</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-schedule">
+          <a href="/schedule/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-calendar"></i> <br>
+            
+            日程表
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/06/Introduction-to-PyTorch/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="MARS">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/messi.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="MARS">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Introduction to PyTorch</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-06T16:16:03+08:00">
+                2019-08-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/PyTorch/" itemprop="url" rel="index">
+                    <span itemprop="name">PyTorch</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Introducing the basics of building a deep learning project using <a href="https://pytorch.org/" target="_blank" rel="noopener">PyTorch</a>, with sample code.</p>
+<p>Written by <strong>Mars</strong> at 2019/7/31 20:30  </p>
+<h1 id="Prerequisites-Autograd"><a href="#Prerequisites-Autograd" class="headerlink" title="Prerequisites:Autograd"></a>Prerequisites:Autograd</h1><p>PyTorch是一个基于python的科学计算包，主要针对两类人群：</p>
+<ul>
+<li>作为NumPy的替代品，可以利用GPU的性能进行计算</li>
+<li>作为一个高灵活性、速度快的深度学习平台</li>
+</ul>
+<p>More details are available at <a href="Autograd.md">Autograd</a>.</p>
+<p>下面导入使用PyTorch构建深度学习模型必不可少的一些库：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="keyword">import</span> torch.nn <span class="keyword">as</span> nn</span><br><span class="line"><span class="keyword">from</span> torch.utils <span class="keyword">import</span> data</span><br><span class="line"><span class="keyword">import</span> torch.nn.functional <span class="keyword">as</span> F</span><br><span class="line"><span class="keyword">import</span> torch.optim <span class="keyword">as</span> optim</span><br><span class="line"><span class="keyword">import</span> torch.backends.cudnn <span class="keyword">as</span> cudnn</span><br><span class="line"><span class="keyword">from</span> tqdm <span class="keyword">import</span> tqdm</span><br><span class="line"><span class="keyword">from</span> tensorboardX <span class="keyword">import</span> SummaryWriter</span><br></pre></td></tr></table></figure>
+
+<h1 id="The-Network-class"><a href="#The-Network-class" class="headerlink" title="The Network class"></a>The Network class</h1><h2 id="Inheritance"><a href="#Inheritance" class="headerlink" title="Inheritance"></a>Inheritance</h2><p>要构建神经网络模型，必须创建一个继承自<code>nn.Module</code>的类。<code>nn.Module</code>提供了用于创建模型的结构。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Network</span><span class="params">(nn.Module)</span>:</span></span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        </span><br><span class="line">        super(Network, self).__init__()</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="Layers"><a href="#Layers" class="headerlink" title="Layers"></a>Layers</h2><p><code>nn</code>中存在多种类型的Layer，如Linear，LSTM，Dropout等。PyTorch中<code>nn.sequential</code>与Keras sequential模型设置类似。但是不建议使用<code>nn.sequential</code>，因为它不会展示出PyTorch的优点。向模型中添加Layers的更好方法是：使用<code>nn</code>创建一个Layer并将其分配给所构建模型类的私有成员。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">self.linear = nn.Linear(input dim, output dim)  <span class="comment"># 在Network类的init函数中将所有Layer声明为类变量</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="The-forward-function"><a href="#The-forward-function" class="headerlink" title="The forward function"></a>The forward function</h2><p>这是整个模型的核心，每次进行训练或者预测时都会执行<code>forward</code>函数。当我们自定义Network类时，一般会重写<code>nn.Module</code>类的<code>forward</code>函数，<code>forward</code>函数定义了模型将怎么进行前向计算。</p>
+<p>Note:如果在forward函数中要用到self以外的参数，那么每次调用模型的时候都要传入这些参数。</p>
+<p>For example:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">forward</span><span class="params">(self, x)</span>:</span></span><br><span class="line">    </span><br><span class="line">    out = self.linear1(x)</span><br><span class="line">    </span><br><span class="line">    out = self.linear2(out)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> out</span><br></pre></td></tr></table></figure>
+
+<h2 id="Additional-functions"><a href="#Additional-functions" class="headerlink" title="Additional functions"></a>Additional functions</h2><p>通过上述步骤，模型中必需的部分都完成了！但是有时当模型具有LSTM Layer时，它需要具备初始化隐藏层的功能，或者在构建玻尔兹曼机时，则需要对隐藏和可见节点进行采样。这时就需要在自定义模型类中创建新的成员函数。</p>
+<h2 id="Parameters-of-your-class"><a href="#Parameters-of-your-class" class="headerlink" title="Parameters of your class"></a>Parameters of your class</h2><p>在使用模型类实例化模型时，请确保尽可能少或没有硬编码值，在实例化模型时还可以传递学习率，隐藏层的大小等。</p>
+<h2 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Network</span><span class="params">(nn.Module)</span>:</span></span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, input1_dim, output1_dim, input2_dim, output2_dim)</span>:</span></span><br><span class="line">        super(Network, self).__init__()</span><br><span class="line">        </span><br><span class="line">        self.linear1 = nn.Linear(input1_dim, output1_dim)</span><br><span class="line">        self.linear2 = nn.Linear(input2_dim, output2_dim)</span><br><span class="line">        </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span><span class="params">(self, x)</span>:</span></span><br><span class="line">    </span><br><span class="line">        out = self.linear1(x)</span><br><span class="line">        out = self.linear2(out)</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> out</span><br></pre></td></tr></table></figure>
+
+<h1 id="The-Custom-DataLoader"><a href="#The-Custom-DataLoader" class="headerlink" title="The Custom DataLoader"></a>The Custom DataLoader</h1><p>在解决机器学习问题的时候，人们花了大量精力准备数据。PyTorch提供了许多工具来让载入数据更简单并尽量让代码的可读性更高。例如datasets split, batch size splits, shuffles等。Keras具有参数”batch size”，可以处理不同尺寸的batches。但如果在PyTorch中这样做，那需要花费很多精力，PyTorch中可自定义DataLoader来解决这些问题！DataLoader可以通过给定数据创建训练集，验证集，测试集，而且具有batch size，shuffle等功能。</p>
+<p>PyTorch有一个默认的<code>dataloader</code>类，可以使用<code>torch.utils.data.dataloader</code>导入。自定义的数据集类应该继承自<code>Dataset</code>类并重新实现以下方法:</p>
+<ul>
+<li><code>__len__</code> 实现 <code>len(dataset)</code> 返还数据集的尺寸；</li>
+<li><code>__getitem__</code> 用来获取一些索引数据，例如 使用<code>dataset[i]</code> 获得第i个样本。</li>
+</ul>
+<h2 id="Inheritance-1"><a href="#Inheritance-1" class="headerlink" title="Inheritance"></a>Inheritance</h2><p>与继承<code>nn.Module</code>的方式类似，构建自定义DataLoader类也需要继承DataLoader的<code>data.Dataset</code>类，但不必像以前那样调用<code>init</code>构造函数。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">dataset</span><span class="params">(data.Dataset)</span>:</span></span><br><span class="line">    <span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="Sequences-and-labels"><a href="#Sequences-and-labels" class="headerlink" title="Sequences and labels"></a>Sequences and labels</h2><p><code>data.Dataset</code>类的成员变量<code>sequences</code>(X)以及<code>labels</code>(y)。可以创建一个名为<code>partition</code>的参数，通过该参数可以返回其相应的数据。</p>
+<p>For example:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">dataset</span><span class="params">(data.Dataset)</span>:</span></span><br><span class="line">     </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, partition)</span>:</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> partition== <span class="string">"train"</span>:</span><br><span class="line">            <span class="comment"># 可以通过以下代码来确保数据属于torch.tensor类型</span></span><br><span class="line">            self.sequences = torch.tensor(self.sequences)</span><br><span class="line">            self.sequences = X_train</span><br><span class="line">            self.labels = y_train</span><br></pre></td></tr></table></figure>
+
+<h2 id="The-len-and-getitem-method"><a href="#The-len-and-getitem-method" class="headerlink" title="The len and getitem method"></a>The len and getitem method</h2><ol>
+<li><p><code>__len __()</code>是<code>data.Dataset</code>类的方法，自定义的数据集类必须重写这个方法，<code>__len__</code> 实现 <code>len(dataset)</code> 返还数据集的尺寸。</p>
+</li>
+<li><p><code>__getitem __(self，index)</code>是一种返回给定索引处的sequences和labels的方法。同样必须必须重写这个方法才能生成功能齐全的数据集类。</p>
+</li>
+</ol>
+<h2 id="Generators-and-parameter-dict"><a href="#Generators-and-parameter-dict" class="headerlink" title="Generators and parameter dict"></a>Generators and parameter dict</h2><p>通过上述步骤，自定义数据集类构建完成，通过<code>dataloader</code>产生的数据以生成器的形式使用。因此必须创建参数字典，基于该参数字典生成数据。这个字典包含的<code>key</code>是：<code>batch_size</code>，<code>shuffle</code>，<code>num_workers</code>。<code>dataloader</code>类的对象将被实例化并与参数字典一起传递给生成器：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">params = &#123;</span><br><span class="line">    <span class="string">"batch_size"</span>: <span class="number">10</span>,</span><br><span class="line">    <span class="string">"shuffle"</span>: <span class="literal">True</span>,</span><br><span class="line">    <span class="string">"num_workers"</span>: <span class="number">20</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">training_set = dataset(X, y, <span class="string">"train"</span>)</span><br><span class="line">training_generator = torch.utils.data.Dataloader(training_set, **params)</span><br></pre></td></tr></table></figure>
+
+<p>数据加载器，组合数据集和采样器，并在数据集上提供单进程或多进程迭代器。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">torch</span>.<span class="title">utils</span>.<span class="title">data</span>.<span class="title">DataLoader</span><span class="params">(dataset, batch_size=<span class="number">1</span>, shuffle=False, sampler=None, batch_sampler=None, num_workers=<span class="number">0</span>, collate_fn=&lt;function default_collate&gt;, pin_memory=False, drop_last=False, timeout=<span class="number">0</span>, worker_init_fn=None)</span></span></span><br></pre></td></tr></table></figure>
+
+<p>参数：</p>
+<ul>
+<li><strong>dataset</strong> (<em>Dataset</em>) ： 要加载数据的数据集。</li>
+<li><strong>batch_size</strong>  (<em>int</em>, <em>可选</em>) ： 每一批要加载多少数据（默认：<code>1</code>）。</li>
+<li><strong>shuffle</strong>  (<em>bool</em>, <em>可选</em>) ： 如果每一个epoch内要打乱数据，就设置为<code>True</code>（默认：<code>False</code>）。</li>
+<li><strong>sampler</strong>  (<em>Sampler</em>, <em>可选</em>) ： 定义了从数据集采数据的策略。如果这一选项指定了，<code>shuffle</code>必须是False。</li>
+<li><strong>batch_sampler</strong>  (<em>Sampler</em>, <em>可选</em>) ： 类似于sampler，但是每次返回一批索引。和<code>batch_size</code>，<code>shuffle</code>，<code>sampler</code>，<code>drop_last</code>互相冲突。</li>
+<li><strong>num_workers</strong>  (<em>int</em>, <em>可选</em>) ： 加载数据的子进程数量。0表示主进程加载数据（默认：<code>0</code>）。</li>
+<li><strong>collate_fn</strong>  (<em>可调用</em>, <em>可选</em>) ： 归并样例列表来组成小批。</li>
+<li><strong>pin_memory</strong>  (<em>bool</em>, <em>可选</em>) ： 如果设置为<code>True</code>，数据加载器会在返回前将张量拷贝到CUDA锁页内存。</li>
+<li><strong>drop_last</strong>  (<em>bool</em>, <em>可选</em>) ： 如果数据集的大小不能不能被批大小整除，该选项设为<code>True</code>后不会把最后的残缺批作为输    入；如果设置为<code>False</code>，最后一个批将会稍微小一点。（默认：<code>False</code>）</li>
+<li><strong>timeout</strong>  (<em>数值</em> , <em>可选</em>) ： 如果是正数，即为收集一个批数据的时间限制。必须非负。（默认：<code>0</code>）</li>
+<li><strong>worker_init_fn</strong>  (<em>可调用</em>, <em>可选</em>) ： 如果不是<code>None</code>，每个worker子进程都会使用worker id（在<code>[0, num_workers - 1]</code>内的整数）进行调用作为输入，这一过程发生在设置种子之后、加载数据之前。（默认：<code>None</code>）</li>
+</ul>
+<p>注意：</p>
+<p>默认地，每个worker都会有各自的PyTorch种子，设置方法是<code>base_seed + worker_id</code>，其中<code>base_seed</code>是主进程通过随机数生成器生成的long型数。而其它库（如NumPy）的种子可能由初始worker复制得到, 使得每一个worker返回相同的种子。可以用<code>torch.initial_seed()</code>查看<code>worker_init_fn</code>中每个worker的PyTorch种子，也可以在加载数据之前设置其他种子。</p>
+<p>警告：</p>
+<p>如果使用了<code>spawn</code>方法，那么<code>worker_init_fn</code>不能是不可序列化对象，如lambda函数。</p>
+<p>Look at the official documentation for more parameters <a href="https://pytorch.org/docs/stable/_modules/torch/utils/data/dataloader.html" target="_blank" rel="noopener">here</a>.</p>
+<h2 id="Summary-1"><a href="#Summary-1" class="headerlink" title="Summary"></a>Summary</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Dataset</span><span class="params">(data.Dataset)</span>:</span></span><br><span class="line">    </span><br><span class="line">    <span class="string">'''Characterizes a dataset for PyTorch</span></span><br><span class="line"><span class="string">    '''</span></span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, list_IDs, labels)</span>:</span></span><br><span class="line">        <span class="string">'''Initialization</span></span><br><span class="line"><span class="string">        '''</span></span><br><span class="line">        self.labels = labels</span><br><span class="line">        self.list_IDs = list_IDs</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__len__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="string">'''Denotes the total number of samples</span></span><br><span class="line"><span class="string">        '''</span></span><br><span class="line">        <span class="keyword">return</span> len(self.list_IDs)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__getitem__</span><span class="params">(self, index)</span>:</span></span><br><span class="line">        <span class="string">'''Generates one sample of data</span></span><br><span class="line"><span class="string">        '''</span></span><br><span class="line">        <span class="comment"># Select sample</span></span><br><span class="line">        ID = self.list_IDs[index]</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Load data and get label</span></span><br><span class="line">        X = torch.load(<span class="string">"data/"</span> + ID + <span class="string">".pt"</span>)</span><br><span class="line">        y = self.labels[ID]</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> X, y</span><br><span class="line"></span><br><span class="line">params = &#123;</span><br><span class="line">    <span class="string">"batch_size"</span>: <span class="number">1</span>,</span><br><span class="line">    <span class="string">"shuffle"</span>: <span class="literal">True</span>,</span><br><span class="line">    <span class="string">"num_workers"</span>: <span class="number">8</span></span><br><span class="line">&#125;</span><br><span class="line">max_epochs = <span class="number">50</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># IDs</span></span><br><span class="line">partition = &#123;</span><br><span class="line">    <span class="string">"train"</span>:[<span class="string">"id-1"</span>, <span class="string">"id-2"</span>, <span class="string">"id-3"</span>],</span><br><span class="line">    <span class="string">"validation"</span>:[<span class="string">"id-4"</span>]</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment"># labels</span></span><br><span class="line">labels = &#123;</span><br><span class="line">    <span class="string">"id-1"</span>: <span class="number">0</span>, </span><br><span class="line">    <span class="string">"id-2"</span>: <span class="number">1</span>, </span><br><span class="line">    <span class="string">"id-3"</span>: <span class="number">2</span>, </span><br><span class="line">    <span class="string">"id-4"</span>: <span class="number">1</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">training_set = Dataset(partition[<span class="string">"train"</span>], labels)</span><br><span class="line">training_generator = data.DataLoader(training_set, **params)</span><br><span class="line"></span><br><span class="line">validation_set = Dataset(partition[<span class="string">"validation"</span>], labels)</span><br><span class="line">validation_generator = data.DataLoader(validation_set, **params)</span><br></pre></td></tr></table></figure>
+
+<h1 id="The-Train-Function"><a href="#The-Train-Function" class="headerlink" title="The Train Function"></a>The Train Function</h1><p>现在有2个类：Module &amp; Dataloader。通过train function将两者结合起来，让我们构建的模型学习。</p>
+<h2 id="Parameters"><a href="#Parameters" class="headerlink" title="Parameters"></a>Parameters</h2><p>训练函数的第一个也是最重要的参数是Module类的对象，另一个是来自Dataloader的训练集生成器和验证集生成器。<br>除了这些必需参数之外，还可以传递<code>number of epochs</code>, <code>learning rate</code>, <code>batch size</code>, <code>clip</code>, <code>loss</code>等。<br>如上所述，不要硬编码值。 而是将它们作为参数传递。</p>
+<h2 id="Initialization"><a href="#Initialization" class="headerlink" title="Initialization"></a>Initialization</h2><p>实例化一个Module类的对象<code>net</code>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">net = Network(input1_dim=<span class="number">10</span>, output1_dim=<span class="number">20</span>, input2_dim=<span class="number">20</span>, output2_dim=<span class="number">5</span>)</span><br><span class="line">net</span><br></pre></td></tr></table></figure>
+
+<p>使用<code>nn</code>分设置损失函数和优化器：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">criterion = nn.MSELoss()</span><br><span class="line">optimizer = torch.optim.Adam(net.parameters(), lr=lr)</span><br></pre></td></tr></table></figure>
+
+<h2 id="The-epoch-amp-tqdm-loop"><a href="#The-epoch-amp-tqdm-loop" class="headerlink" title="The epoch &amp; tqdm loop"></a>The epoch &amp; tqdm loop</h2><p>开始一个迭代<code>n</code>次的循环，其中<code>n</code>指的是<code>epoch</code>的值。每个<code>epoch</code>结束时，打印本次<code>epoch</code>训练集以及验证集的loss。</p>
+<p>对于包含大量数据的深度学习模型循环可能会运行相当长的时间。 引入tqdm，它是每次迭代的进度条，在这里查看其<a href="https://tqdm.github.io/" target="_blank" rel="noopener">官方文档</a>。迭代器必须分配给tqdm并在循环中使用，每个<code>epoch</code>函数遍历<code>batch size</code>，这里的迭代器是训练集生成器。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">t = tqdm(iter(training_generator), </span><br><span class="line">         leave=<span class="literal">False</span>, </span><br><span class="line">         total=len(training_generator))</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i, batch <span class="keyword">in</span> enumerate(t):</span><br><span class="line">    x_batch, y_batch = next(iter(training_generator))</span><br></pre></td></tr></table></figure>
+
+<h2 id="GPU-availability"><a href="#GPU-availability" class="headerlink" title="GPU availability"></a>GPU availability</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># CUDA for PyTorch</span></span><br><span class="line">use_cuda = torch.cuda.is_available()</span><br><span class="line">device = torch.device(<span class="string">"cuda:0"</span> <span class="keyword">if</span> use_cuda <span class="keyword">else</span> <span class="string">"cpu"</span>)</span><br><span class="line">cudnn.benchmark = <span class="literal">True</span></span><br><span class="line"></span><br><span class="line">X_batch, y_batch = X_batch.to(device), y_batch.to(device)</span><br></pre></td></tr></table></figure>
+
+<h2 id="Train-amp-Evaluation"><a href="#Train-amp-Evaluation" class="headerlink" title="Train &amp; Evaluation"></a>Train &amp; Evaluation</h2><p>开始训练之前必须将其设置为训练模式：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">net.train()</span><br><span class="line"><span class="keyword">for</span> epoch <span class="keyword">in</span> range(max_epochs):</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> i, batch <span class="keyword">in</span> enumerate(t):</span><br><span class="line">    </span><br><span class="line">        X_batch, y_batch = next(iter(training_generator))</span><br><span class="line">        <span class="comment"># Transfer to GPU</span></span><br><span class="line">        X_batch, y_batch = X_batch.to(device), y_batch.to(device)</span><br><span class="line">        </span><br><span class="line">            </span><br><span class="line">        <span class="comment"># 计算out &amp; loss</span></span><br><span class="line">        output = net(X_batch)</span><br><span class="line">        loss = criterion(output, y_batch)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 反向传播 &amp; 更新参数</span></span><br><span class="line">        loss.backward()</span><br><span class="line">        optimizer.step()</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 使用tqdm iterator打印损失进度</span></span><br><span class="line">        t.set_postfix(loss=train_loss)</span><br></pre></td></tr></table></figure>
+
+<p>训练结束后进行测试，应将模型设置为测试模式：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">net.eval()</span><br><span class="line"><span class="keyword">with</span> torch.set_grad_enabled(<span class="literal">False</span>):</span><br><span class="line">    <span class="keyword">for</span> x_batch, y_labels <span class="keyword">in</span> validation_generator:</span><br><span class="line">        <span class="comment"># Transfer to GPU</span></span><br><span class="line">        x_batch, y_labels = x_batch.to(device), y_labels.to(device)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Model computations</span></span><br><span class="line">        <span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="Saving-the-model-and-state-dict"><a href="#Saving-the-model-and-state-dict" class="headerlink" title="Saving the model and state_dict"></a>Saving the model and state_dict</h2><p>模型训练完成后，必须将其保存以备将来使用，在pytorch中有两种主要方法可以保存训练好的模型：</p>
+<ol>
+<li><code>torch.save()</code> ： 保存整个模型</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">torch.save(net, path)    <span class="comment"># saving</span></span><br><span class="line">net = torch.load(path)   <span class="comment"># loading</span></span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li><code>model.state_dict()</code> ： <code>state_dict</code>函数仅存储模型的参数（权重，偏差等），而不是保存整个模型。要使用已保存的模型，必须创建Module类的对象，并且必须分配相应的参数。</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">torch.save(net.state_dict(), path)       <span class="comment">#saving</span></span><br><span class="line">net = Network(*args, **kwargs)           </span><br><span class="line">net.load_state_dict(torch.load(path))    <span class="comment">#loading</span></span><br></pre></td></tr></table></figure>
+
+<p>如上所述，<code>torch.save</code>保存整个模型。加载它不需要实例化Module类。如果你的模型在完全不同的平台上工作，而不考虑底层代码，那么<code>torch.save()</code>非常适合这种情况的。</p>
+<p>相反，如果正在执行实验，<code>state_dict()</code>是非常有优势的，因为它只保存模型的参数，并且对于任何进一步的修改都是灵活的，而且它对内存比较友好。</p>
+<p>Look at <a href="https://stackoverflow.com/questions/42703500/best-way-to-save-a-trained-model-in-pytorch" target="_blank" rel="noopener">these</a> stackoverflow answers for more details.</p>
+<h1 id="Organizing"><a href="#Organizing" class="headerlink" title="Organizing"></a>Organizing</h1><p>由于大量的实验都是在深度学习模型上进行参数调优，因此将参数调优存储在合适的目录结构中非常重要。以下是需要遵循的几个步骤。</p>
+<h2 id="Config-file"><a href="#Config-file" class="headerlink" title="Config file"></a>Config file</h2><p>学习率、损失函数、epochs等参数都是不断变化的。要管理所有这些参数，请创建一个配置文件（包含所有那些可以使用的参数）。在实例化类或调用函数时，您可以通过以下命令导入并使用:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> config <span class="keyword">import</span> *</span><br></pre></td></tr></table></figure>
+
+<p>调参时直接更改配置文件就可以了。</p>
+<h2 id="Tensorboard"><a href="#Tensorboard" class="headerlink" title="Tensorboard"></a>Tensorboard</h2><p>对 loss accuracy 进行可视化，要包含tensorboard，在训练函数之前添加一行:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">writer = SummaryWriter(path)</span><br></pre></td></tr></table></figure>
+
+<p>在每个epoch中包含以下代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">writer.add_scalar(<span class="string">"loss"</span>, loss, epoch_number)</span><br><span class="line">writer.add_scalar(<span class="string">"accuracy"</span>, accuracy, epoch_number)</span><br></pre></td></tr></table></figure>
+
+<p>可以选择使用各种参数添加任意图形。训练结束，关闭<code>writer</code>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">writer.close()</span><br></pre></td></tr></table></figure>
+
+<p>记住要改变随后的图形存储的路径，因为图可能会被覆盖。</p>
+<h2 id="Requirements-file"><a href="#Requirements-file" class="headerlink" title="Requirements file"></a>Requirements file</h2><p>这可能比较繁琐，但是有一个包含所有库及其版本的需求文件可以使整个项目变得更加完善（完美）。</p>
+<p>Look at this <a href="https://stackoverflow.com/questions/31684375/automatically-create-requirements-txt" target="_blank" rel="noopener">link</a> to know how to freeze all your requirements.</p>
+<h2 id="A-readme"><a href="#A-readme" class="headerlink" title="A readme"></a>A readme</h2><p>描述这个项目并指导人们使用自己的代码!</p>
+<h1 id="Additional-Running-Multiple-Experiments-—-The-JSON-Trick"><a href="#Additional-Running-Multiple-Experiments-—-The-JSON-Trick" class="headerlink" title="Additional : Running Multiple Experiments — The JSON Trick !"></a>Additional : Running Multiple Experiments — The JSON Trick !</h1><p>对于大型实验，每次运行实验时都需要大量的人工操作来修改配置文件。为了较少人工操作，可以将一组配置参数转换为一个<code>json</code>对象。<br>你的配置文件是这样的:</p>
+<ul>
+<li>lr = 0.01</li>
+<li>epochs =100</li>
+<li>…</li>
+</ul>
+<p>下面的代码可以将整个文本转换为一个<code>json</code>对象：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> json </span><br><span class="line">data = dict(zip(parameter, value))   <span class="comment">#create a dictionary</span></span><br><span class="line">json.dumps(data)    <span class="comment">#json object</span></span><br></pre></td></tr></table></figure>
+
+<p>可以创建多个<code>json</code>对象，每个对象代表一个单独的实验。这些将形成一个<code>json</code>对象数组，可以递归遍历，而且只需传递给main函数一次!</p>
+<h1 id="A-Better-Conclusion"><a href="#A-Better-Conclusion" class="headerlink" title="A Better Conclusion !"></a>A Better Conclusion !</h1><p>深度学习项目结构图：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> IPython.display <span class="keyword">import</span> Image</span><br><span class="line">Image(filename=<span class="string">"./image/project structure.jpeg"</span>, width=<span class="number">600</span>, height=<span class="number">500</span>)</span><br></pre></td></tr></table></figure>
+
+<p><img src="./Introduction-to-PyTorch/output_73_0.jpeg" alt="jpeg"></p>
+<h1 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h1><ol>
+<li><a href="https://pytorch.org/" target="_blank" rel="noopener">PyTorch</a></li>
+<li><a href="https://pytorch.apachecn.org/" target="_blank" rel="noopener">ApacheCN</a></li>
+<li><a href="https://medium.com/@nikhilamunipalli/starter-pack-for-deep-learning-in-pytorch-for-extreme-beginners-by-a-beginner-330f3fdefcc4" target="_blank" rel="noopener">All You Need To Know For Your First Ever Project in PyTorch!</a></li>
+<li><a href="https://stanford.edu/~shervine/blog/pytorch-how-to-generate-data-parallel" target="_blank" rel="noopener">A detailed example of how to generate your data in parallel with PyTorch</a></li>
+</ol>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/08/06/Autograd/" rel="next" title="Autograd">
+                <i class="fa fa-chevron-left"></i> Autograd
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/messi.jpg" alt="MARS">
+            
+              <p class="site-author-name" itemprop="name">MARS</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Prerequisites-Autograd"><span class="nav-number">1.</span> <span class="nav-text">Prerequisites:Autograd</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#The-Network-class"><span class="nav-number">2.</span> <span class="nav-text">The Network class</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Inheritance"><span class="nav-number">2.1.</span> <span class="nav-text">Inheritance</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Layers"><span class="nav-number">2.2.</span> <span class="nav-text">Layers</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#The-forward-function"><span class="nav-number">2.3.</span> <span class="nav-text">The forward function</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Additional-functions"><span class="nav-number">2.4.</span> <span class="nav-text">Additional functions</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Parameters-of-your-class"><span class="nav-number">2.5.</span> <span class="nav-text">Parameters of your class</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Summary"><span class="nav-number">2.6.</span> <span class="nav-text">Summary</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#The-Custom-DataLoader"><span class="nav-number">3.</span> <span class="nav-text">The Custom DataLoader</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Inheritance-1"><span class="nav-number">3.1.</span> <span class="nav-text">Inheritance</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Sequences-and-labels"><span class="nav-number">3.2.</span> <span class="nav-text">Sequences and labels</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#The-len-and-getitem-method"><span class="nav-number">3.3.</span> <span class="nav-text">The len and getitem method</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Generators-and-parameter-dict"><span class="nav-number">3.4.</span> <span class="nav-text">Generators and parameter dict</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Summary-1"><span class="nav-number">3.5.</span> <span class="nav-text">Summary</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#The-Train-Function"><span class="nav-number">4.</span> <span class="nav-text">The Train Function</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Parameters"><span class="nav-number">4.1.</span> <span class="nav-text">Parameters</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Initialization"><span class="nav-number">4.2.</span> <span class="nav-text">Initialization</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#The-epoch-amp-tqdm-loop"><span class="nav-number">4.3.</span> <span class="nav-text">The epoch &amp; tqdm loop</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GPU-availability"><span class="nav-number">4.4.</span> <span class="nav-text">GPU availability</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Train-amp-Evaluation"><span class="nav-number">4.5.</span> <span class="nav-text">Train &amp; Evaluation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Saving-the-model-and-state-dict"><span class="nav-number">4.6.</span> <span class="nav-text">Saving the model and state_dict</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Organizing"><span class="nav-number">5.</span> <span class="nav-text">Organizing</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Config-file"><span class="nav-number">5.1.</span> <span class="nav-text">Config file</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Tensorboard"><span class="nav-number">5.2.</span> <span class="nav-text">Tensorboard</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Requirements-file"><span class="nav-number">5.3.</span> <span class="nav-text">Requirements file</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#A-readme"><span class="nav-number">5.4.</span> <span class="nav-text">A readme</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Additional-Running-Multiple-Experiments-—-The-JSON-Trick"><span class="nav-number">6.</span> <span class="nav-text">Additional : Running Multiple Experiments — The JSON Trick !</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#A-Better-Conclusion"><span class="nav-number">7.</span> <span class="nav-text">A Better Conclusion !</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Reference"><span class="nav-number">8.</span> <span class="nav-text">Reference</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">MARS</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
