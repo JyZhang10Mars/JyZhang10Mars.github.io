@@ -97,7 +97,7 @@
 <meta property="og:image" content="https://res.cloudinary.com/leomars/image/upload/v1565769529/samples/mars/propagation_steps_fmlvgw.jpg">
 <meta property="og:image" content="https://res.cloudinary.com/leomars/image/upload/v1565769528/samples/mars/applications_of_graph_neural_networks_zielmf.jpg">
 <meta property="og:image" content="https://res.cloudinary.com/leomars/image/upload/v1565751960/samples/mars/gnn_fqjxaf.jpg">
-<meta property="og:updated_time" content="2019-08-14T08:16:17.783Z">
+<meta property="og:updated_time" content="2019-08-14T09:50:02.658Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="GNN系列一：GNN基础知识介绍">
 <meta name="twitter:description" content="【导读】传统深度学习模型 RNN和CNN 在欧几里得空间数据(语言，图像，视频等)上取得了不错的成绩，但是在对非欧几里得空间数据(eg：社交网络、蛋白质间的相互作用等)进行处理上却存在一定的局限性，例如：CNN的卷积核在非欧几里得结构化数据上无法保持平移不变性，通俗理解就是在拓扑图中每个结点的相邻结点都可能不同，那么当然无法用一个同样尺寸的卷积核来进行卷积运算。针对该问题，研究者们引入了图论中抽象">
@@ -475,9 +475,9 @@ loss=\sum_{i=1}^{p}\left(\mathbf{t}_{i}-\mathbf{o}_{i}\right)</script><p>实验�
 </li>
 <li><p>Gate：使用GRU或者是LSTM这种带有门控机制的网络，来增强信息在图结构中的长期的传播。</p>
 </li>
-<li><p>Attention：GAT是一种图注意网络，它将注意力机制融入到了图传播的步骤中。GAT计算每个节点的隐藏状态，通过将 “attention” 机制应用到邻近节点上。</p>
+<li><p>Attention：GAT是一种图注意网络，它将注意力机制融入到了图传播的步骤中。GAT计算每个节点的隐藏状态，通过将Attention机制应用到邻近节点上。</p>
 </li>
-<li><p>Skip connection：研究发现更深的网络层数可以帮助网络在节点的邻域节点上获取到更多的信息。但通过实验也发现深层网络也会在网络传播中带来噪声信息，随着网络层数的加深，网络还会出现退化。基于图像领域的启发，residual network和highway network 这些Skip模型能够有效的处理这一问题。</p>
+<li><p>Skip connection：研究发现更深的网络层数可以帮助网络在节点的邻域节点上获取到更多的信息。但通过实验也发现深层网络也会在网络传播中带来噪声信息，随着网络层数的加深，网络还会出现退化（残差连接）。基于图像领域的启发，residual network和highway network 这些Skip模型能够有效的处理这一问题。</p>
 </li>
 </ul>
 <p><img src="https://res.cloudinary.com/leomars/image/upload/v1565769529/samples/mars/propagation_steps_fmlvgw.jpg" alt></p>
