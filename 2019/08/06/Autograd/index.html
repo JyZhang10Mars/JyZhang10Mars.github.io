@@ -5,7 +5,7 @@
   
 
 
-<html class="theme-next mist use-motion" lang="zh-Hans">
+<html class="theme-next pisces use-motion" lang="zh-Hans">
 <head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -86,7 +86,7 @@
 <meta property="og:site_name" content="MARS">
 <meta property="og:description" content="PyTorch中，所有神经网络的核心是autograd包。 autograd包为张量上的所有操作提供了自动求导机制。它是一个在运行时定义（define-by-run）的框架，这意味着反向传播是根据代码如何运行来决定的，并且每次迭代可以是不同的. 让我们用一些简单的例子来看看吧。 张量torch.Tensor是这个包的核心类。如果设置它的属性 .requires_grad为True，那么它将会追踪对">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-08-06T08:07:26.463Z">
+<meta property="og:updated_time" content="2019-08-14T03:39:59.471Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Autograd">
 <meta name="twitter:description" content="PyTorch中，所有神经网络的核心是autograd包。 autograd包为张量上的所有操作提供了自动求导机制。它是一个在运行时定义（define-by-run）的框架，这意味着反向传播是根据代码如何运行来决定的，并且每次迭代可以是不同的. 让我们用一些简单的例子来看看吧。 张量torch.Tensor是这个包的核心类。如果设置它的属性 .requires_grad为True，那么它将会追踪对">
@@ -97,7 +97,7 @@
   var NexT = window.NexT || {};
   var CONFIG = {
     root: '/',
-    scheme: 'Mist',
+    scheme: 'Pisces',
     version: '5.1.4',
     sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
     fancybox: true,
@@ -371,69 +371,69 @@
 <p><code>Tensor</code>和<code>Function</code>互相连接生成了一个无圈图(acyclic graph)，它编码了完整的计算历史。每个张量都有一个<code>.grad_fn</code>属性，该属性引用了创建<code>Tensor</code>自身的<code>Function</code>（除非这个张量是用户手动创建的，即这个张量的<code>grad_fn</code>是<code>None</code>）。</p>
 <p>如果需要计算导数，可以在<code>Tensor</code>上调用<code>.backward()</code>。如果<code>Tensor</code>是一个标量（即它包含一个元素的数据），则不需要为<code>backward()</code>指定任何参数，但是如果它有更多的元素，则需要指定一个<code>gradient</code>参数，该参数是形状匹配的张量。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch</span><br></pre></td></tr></table></figure>
-
 <p>创建一个张量并设置<code>requires_grad=True</code>用来追踪其计算历史</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">x = torch.ones(<span class="number">2</span>, <span class="number">2</span>, requires_grad=<span class="literal">True</span>)</span><br><span class="line">print(x)</span><br></pre></td></tr></table></figure>
-
 <p>输出：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">tensor([[<span class="number">1.</span>, <span class="number">1.</span>],</span><br><span class="line">        [<span class="number">1.</span>, <span class="number">1.</span>]], requires_grad=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
-
 <p>对这个张量做一次运算：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">y = x + <span class="number">2</span></span><br><span class="line">print(y)</span><br></pre></td></tr></table></figure>
-
 <p>输出：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">tensor([[<span class="number">3.</span>, <span class="number">3.</span>],</span><br><span class="line">        [<span class="number">3.</span>, <span class="number">3.</span>]], grad_fn=&lt;AddBackward0&gt;)</span><br></pre></td></tr></table></figure>
-
 <p><code>y</code>是计算的结果，所以它有<code>grad_fn</code>属性。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">print(y.grad_fn)</span><br></pre></td></tr></table></figure>
-
 <p>输出：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;AddBackward0 object at <span class="number">0x7f1b248453c8</span>&gt;</span><br></pre></td></tr></table></figure>
-
 <p>对<code>y</code>进行更多操作</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">z = y * y * <span class="number">3</span></span><br><span class="line">out = z.mean()</span><br><span class="line"></span><br><span class="line">print(z, out)</span><br></pre></td></tr></table></figure>
-
 <p>输出：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">tensor([[<span class="number">27.</span>, <span class="number">27.</span>],</span><br><span class="line">        [<span class="number">27.</span>, <span class="number">27.</span>]], grad_fn=&lt;MulBackward0&gt;) tensor(<span class="number">27.</span>, grad_fn=&lt;MeanBackward0&gt;)</span><br></pre></td></tr></table></figure>
-
 <p><code>.requires_grad_(...)</code> 原地改变了现有张量的 <code>requires_grad</code> 标志。如果没有指定的话，默认输入的这个标志是<code>False</code>。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">a = torch.randn(<span class="number">2</span>, <span class="number">2</span>)</span><br><span class="line">a = ((a * <span class="number">3</span>) / (a - <span class="number">1</span>))</span><br><span class="line">print(a.requires_grad)</span><br><span class="line">a.requires_grad_(<span class="literal">True</span>)</span><br><span class="line">print(a.requires_grad)</span><br><span class="line">b = (a * a).sum()</span><br><span class="line">print(b.grad_fn)</span><br></pre></td></tr></table></figure>
-
 <p>输出：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="literal">False</span></span><br><span class="line"><span class="literal">True</span></span><br><span class="line">&lt;SumBackward0 object at <span class="number">0x7f1b24845f98</span>&gt;</span><br></pre></td></tr></table></figure>
-
 <h2 id="梯度"><a href="#梯度" class="headerlink" title="梯度"></a>梯度</h2><p>现在开始进行反向传播，因为<code>out</code>是一个标量，因此<code>out.backward()</code>和<code>out.backward(torch.tensor(1.))</code>等价。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">out.backward()</span><br></pre></td></tr></table></figure>
-
 <p>输出导数<code>d(out)/dx</code></p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">print(x.grad)</span><br></pre></td></tr></table></figure>
-
 <p>输出：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">tensor([[<span class="number">4.5000</span>, <span class="number">4.5000</span>],</span><br><span class="line">        [<span class="number">4.5000</span>, <span class="number">4.5000</span>]])</span><br></pre></td></tr></table></figure>
-
 <p>得到一个值全部为<code>4.5</code>的矩阵。</p>
-<p>让我们来调用<code>out</code>张量 $$“o”$$。</p>
-<p>就可以得到 $$o = \frac{1}{4}\sum_i z_i$$，$$z_i = 3(x_i+2)^2$$和$$z_i\bigr\rvert_{x_i=1} = 27$$因此,$$\frac{\partial o}{\partial x_i} = \frac{3}{2}(x_i+2)$$，因而$$\frac{\partial o}{\partial x_i}\bigr\rvert_{x_i=1} = \frac{9}{2} = 4.5$$。</p>
-<p>数学上，若有向量值函数 $$\vec{y}=f(\vec{x})$$，那么 $$\vec{y}$$ 相对于 $$\vec{x}$$ 的梯度是一个雅可比矩阵：<br>$$<br>J=\left(\begin{array}{ccc}<br>   \frac{\partial y_{1}}{\partial x_{1}} &amp; \cdots &amp; \frac{\partial y_{m}}{\partial x_{1}}\<br>   \vdots &amp; \ddots &amp; \vdots\<br>   \frac{\partial y_{1}}{\partial x_{n}} &amp; \cdots &amp; \frac{\partial y_{m}}{\partial x_{n}}<br>   \end{array}\right)<br>$$<br>通常来说，<code>torch.autograd</code> 是计算雅可比向量积的一个“引擎”。也就是说，给定任意向量 $$v=\left(\begin{array}{cccc} v_{1} &amp; v_{2} &amp; \cdots &amp; v_{m}\end{array}\right)^{T}$$，计算乘积 $$ v^{T}\cdot J$$。如果 $$v$$ 恰好是一个标量函数 $$l=g\left(\vec{y}\right)$$ 的导数，即 $$v=\left(\begin{array}{ccc}\frac{\partial l}{\partial y_{1}} &amp; \cdots &amp; \frac{\partial l}{\partial y_{m}}\end{array}\right)^{T}$$，那么根据链式法则，雅可比向量积应该是 $$l$$ 对 $$\vec{x}$$ 的导数：<br>$$<br>J^{T}\cdot v=\left(\begin{array}{ccc}<br>   \frac{\partial y_{1}}{\partial x_{1}} &amp; \cdots &amp; \frac{\partial y_{m}}{\partial x_{1}}\<br>   \vdots &amp; \ddots &amp; \vdots\<br>   \frac{\partial y_{1}}{\partial x_{n}} &amp; \cdots &amp; \frac{\partial y_{m}}{\partial x_{n}}<br>   \end{array}\right)\left(\begin{array}{c}<br>   \frac{\partial l}{\partial y_{1}}\<br>   \vdots\<br>   \frac{\partial l}{\partial y_{m}}<br>   \end{array}\right)=\left(\begin{array}{c}<br>   \frac{\partial l}{\partial x_{1}}\<br>   \vdots\<br>   \frac{\partial l}{\partial x_{n}}<br>   \end{array}\right)<br>$$<br>（注意：行向量的$$ v^{T}\cdot J$$也可以被视作列向量的$$J^{T}\cdot v$$)</p>
+<p>让我们来调用<code>out</code>张量 <script type="math/tex">“o”</script>。</p>
+<p>就可以得到 <script type="math/tex">o = \frac{1}{4}\sum_i z_i</script>，<script type="math/tex">z_i = 3(x_i+2)^2</script>和<script type="math/tex">z_i\bigr\rvert_{x_i=1} = 27</script>因此,<script type="math/tex">\frac{\partial o}{\partial x_i} = \frac{3}{2}(x_i+2)</script>，因而<script type="math/tex">\frac{\partial o}{\partial x_i}\bigr\rvert_{x_i=1} = \frac{9}{2} = 4.5</script>。</p>
+<p>数学上，若有向量值函数 <script type="math/tex">\vec{y}=f(\vec{x})</script>，那么 <script type="math/tex">\vec{y}</script> 相对于 <script type="math/tex">\vec{x}</script> 的梯度是一个雅可比矩阵：</p>
+<script type="math/tex; mode=display">
+J=\left(\begin{array}{ccc}
+   \frac{\partial y_{1}}{\partial x_{1}} & \cdots & \frac{\partial y_{m}}{\partial x_{1}}\\
+   \vdots & \ddots & \vdots\\
+   \frac{\partial y_{1}}{\partial x_{n}} & \cdots & \frac{\partial y_{m}}{\partial x_{n}}
+   \end{array}\right)</script><p>通常来说，<code>torch.autograd</code> 是计算雅可比向量积的一个“引擎”。也就是说，给定任意向量 <script type="math/tex">v=\left(\begin{array}{cccc} v_{1} & v_{2} & \cdots & v_{m}\end{array}\right)^{T}</script>，计算乘积 <script type="math/tex">v^{T}\cdot J</script>。如果 <script type="math/tex">v</script> 恰好是一个标量函数 <script type="math/tex">l=g\left(\vec{y}\right)</script> 的导数，即 <script type="math/tex">v=\left(\begin{array}{ccc}\frac{\partial l}{\partial y_{1}} & \cdots & \frac{\partial l}{\partial y_{m}}\end{array}\right)^{T}</script>，那么根据链式法则，雅可比向量积应该是 <script type="math/tex">l</script> 对 <script type="math/tex">\vec{x}</script> 的导数：</p>
+<script type="math/tex; mode=display">
+J^{T}\cdot v=\left(\begin{array}{ccc}
+   \frac{\partial y_{1}}{\partial x_{1}} & \cdots & \frac{\partial y_{m}}{\partial x_{1}}\\
+   \vdots & \ddots & \vdots\\
+   \frac{\partial y_{1}}{\partial x_{n}} & \cdots & \frac{\partial y_{m}}{\partial x_{n}}
+   \end{array}\right)\left(\begin{array}{c}
+   \frac{\partial l}{\partial y_{1}}\\
+   \vdots\\
+   \frac{\partial l}{\partial y_{m}}
+   \end{array}\right)=\left(\begin{array}{c}
+   \frac{\partial l}{\partial x_{1}}\\
+   \vdots\\
+   \frac{\partial l}{\partial x_{n}}
+   \end{array}\right)</script><p>（注意：行向量的<script type="math/tex">v^{T}\cdot J</script>也可以被视作列向量的<script type="math/tex">J^{T}\cdot v</script>)</p>
 <p>雅可比向量积的这一特性使得将外部梯度输入到具有非标量输出的模型中变得非常方便。</p>
 <p>现在我们来看一个雅可比向量积的例子:</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">x = torch.randn(<span class="number">3</span>, requires_grad=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">y = x * <span class="number">2</span></span><br><span class="line"><span class="keyword">while</span> y.data.norm() &lt; <span class="number">1000</span>:</span><br><span class="line">    y = y * <span class="number">2</span></span><br><span class="line"></span><br><span class="line">print(y)</span><br></pre></td></tr></table></figure>
-
 <p>输出：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tensor([<span class="number">-278.6740</span>,  <span class="number">935.4016</span>,  <span class="number">439.6572</span>], grad_fn=&lt;MulBackward0&gt;)</span><br></pre></td></tr></table></figure>
-
 <p>在这种情况下，<code>y</code>不再是标量。<code>torch.autograd</code>不能直接计算完整的雅可比矩阵，但是如果我们只想要雅可比向量积，只需将这个向量作为参数传给<code>backward</code>：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">v = torch.tensor([<span class="number">0.1</span>, <span class="number">1.0</span>, <span class="number">0.0001</span>], dtype=torch.float)</span><br><span class="line">y.backward(v)</span><br><span class="line"></span><br><span class="line">print(x.grad)</span><br></pre></td></tr></table></figure>
-
 <p>输出：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tensor([<span class="number">4.0960e+02</span>, <span class="number">4.0960e+03</span>, <span class="number">4.0960e-01</span>])</span><br></pre></td></tr></table></figure>
-
 <p>也可以通过将代码块包装在 <code>with torch.no_grad():</code> 中，来阻止autograd跟踪设置了 <code>.requires_grad=True</code> 的张量的历史记录。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">print(x.requires_grad)</span><br><span class="line">print((x ** <span class="number">2</span>).requires_grad)</span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> torch.no_grad():</span><br><span class="line">    print((x ** <span class="number">2</span>).requires_grad)</span><br></pre></td></tr></table></figure>
-
 <p>输出：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="literal">True</span></span><br><span class="line"><span class="literal">True</span></span><br><span class="line"><span class="literal">False</span></span><br></pre></td></tr></table></figure>
-
 <blockquote>
 <p>后续阅读：<code>autograd</code>和<code>Function</code>的文档见：<a href="https://pytorch.org/docs/autograd" target="_blank" rel="noopener">PyTorch</a></p>
 <p>Reference：<a href="https://pytorch.apachecn.org/" target="_blank" rel="noopener">Apachecn</a></p>
@@ -637,7 +637,7 @@
 
 
 
-  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
 
 
 
@@ -737,6 +737,13 @@
   
   
 
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
   
   <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
 <script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
@@ -799,6 +806,26 @@
   
 
   
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
   
 
 

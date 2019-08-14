@@ -5,7 +5,7 @@
   
 
 
-<html class="theme-next mist use-motion" lang="zh-Hans">
+<html class="theme-next pisces use-motion" lang="zh-Hans">
 <head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -86,7 +86,7 @@
 <meta property="og:site_name" content="MARS">
 <meta property="og:description" content="Translated by Mars at 2019/7/31 17:30 Motivation你有没有加载一个大型数据集导致内存消耗巨大的经历？你是否希望有一个好的方法来解决这个问题？ 随着不断增长的数据量，大型数据集正日益普遍。 在某些情况下，即使是最先进的配置也没有足够的内存空间来处理大型数据，这就是为什么需要找到其他方法来有效地完成这项任务的原因。 在这篇博文中将展示如何实时地在multi">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-08-06T08:24:32.947Z">
+<meta property="og:updated_time" content="2019-08-14T03:39:10.951Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="PyTorch Data Generator">
 <meta name="twitter:description" content="Translated by Mars at 2019/7/31 17:30 Motivation你有没有加载一个大型数据集导致内存消耗巨大的经历？你是否希望有一个好的方法来解决这个问题？ 随着不断增长的数据量，大型数据集正日益普遍。 在某些情况下，即使是最先进的配置也没有足够的内存空间来处理大型数据，这就是为什么需要找到其他方法来有效地完成这项任务的原因。 在这篇博文中将展示如何实时地在multi">
@@ -97,7 +97,7 @@
   var NexT = window.NexT || {};
   var CONFIG = {
     root: '/',
-    scheme: 'Mist',
+    scheme: 'Pisces',
     version: '5.1.4',
     sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
     fancybox: true,
@@ -367,10 +367,8 @@
 <p>本教程将向您展示如何在PyTorch上执行此操作，其中高效的数据生成方案对于在训练过程中充分利用GPU的全部潜力至关重要。</p>
 <h1 id="Tutorial"><a href="#Tutorial" class="headerlink" title="Tutorial"></a>Tutorial</h1><h2 id="Previous-situation"><a href="#Previous-situation" class="headerlink" title="Previous situation"></a>Previous situation</h2><p>Before reading this article, your PyTorch script probably looked like this:</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Load entire dataset</span></span><br><span class="line">X, y = torch.load(<span class="string">'some_training_set_with_labels.pt'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Train model</span></span><br><span class="line"><span class="keyword">for</span> epoch <span class="keyword">in</span> range(max_epochs):</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(n_batches):</span><br><span class="line">        <span class="comment"># Local batches and labels</span></span><br><span class="line">        local_X, local_y = X[i*n_batches:(i+<span class="number">1</span>)*n_batches,], y[i*n_batches:(i+<span class="number">1</span>)*n_batches,]</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Your model</span></span><br><span class="line">        [...]</span><br></pre></td></tr></table></figure>
-
 <p>or even this:</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Unoptimized generator</span></span><br><span class="line">training_generator = SomeSingleCoreGenerator(<span class="string">'some_training_set_with_labels.pt'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Train model</span></span><br><span class="line"><span class="keyword">for</span> epoch <span class="keyword">in</span> range(max_epochs):</span><br><span class="line">    <span class="keyword">for</span> local_X, local_y <span class="keyword">in</span> training_generator:</span><br><span class="line">        <span class="comment"># Your model</span></span><br><span class="line">        [...]</span><br></pre></td></tr></table></figure>
-
 <p>本文是关于优化整个数据生成的一个过程，因此它不会成为训练过程中的瓶颈。</p>
 <p>为了做到这一点，让我们深入分步建立一个合适的可并行化数据生成器。下面的代码是一个很好的框架，可用于您自己的项目; 您可以复制/粘贴以下代码并进行相应地填充。</p>
 <h2 id="Notations"><a href="#Notations" class="headerlink" title="Notations"></a>Notations</h2><p>在开始之前，先了解一些在处理大型数据集时特别有用的技巧。</p>
@@ -387,34 +385,27 @@
 </ol>
 <p>例如，假如说训练集有 <code>id-1</code>, <code>id-2</code> and <code>id-3</code> 对应的label分别为 <code>0</code>, <code>1</code> and <code>2</code> ；验证集有 <code>id-4</code> 对应的label为 <code>1</code> 。则<code>partition</code>及<code>labels</code>定义为：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">partition = &#123;</span><br><span class="line">    <span class="string">"train"</span>:[<span class="string">"id-1"</span>, <span class="string">"id-2"</span>, <span class="string">"id-3"</span>],</span><br><span class="line">    <span class="string">"validation"</span>:[<span class="string">"id-4"</span>],</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">labels = &#123;</span><br><span class="line">    <span class="string">"id-1"</span>: <span class="number">0</span>, </span><br><span class="line">    <span class="string">"id-2"</span>: <span class="number">1</span>, </span><br><span class="line">    <span class="string">"id-3"</span>: <span class="number">2</span>, </span><br><span class="line">    <span class="string">"id-4"</span>: <span class="number">1</span>,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <p>另外，为了模块化，我们将在单独的文件中编写PyTorch代码和自定义类，以便您的文件夹看起来像:</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">folder/</span><br><span class="line">|--my_classes.py</span><br><span class="line">|--pytorch_script.py</span><br><span class="line">|__data/</span><br></pre></td></tr></table></figure>
-
 <p>其中<code>data/</code>为包含数据集的文件夹。值得注意的是，本教程中的代码以通用和简洁为主旨，以便您可以轻松地将其用于您自己的数据集。</p>
 <h2 id="Dataset"><a href="#Dataset" class="headerlink" title="Dataset"></a>Dataset</h2><p>现在，让我们详细了解如何设置Python类<code>Dataset</code>。首先，让我们编写类的初始化函数。我们使自定义的<code>Dataset</code>类继承<code>torch.utils.data.Dataset</code>，以便以后可以利用多处理等功能。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, list_IDs, labels)</span>:</span></span><br><span class="line">    </span><br><span class="line">    <span class="string">'''Initialization</span></span><br><span class="line"><span class="string">    '''</span></span><br><span class="line">    </span><br><span class="line">    self.labels = labels</span><br><span class="line">    self.list_IDs = list_IDs</span><br></pre></td></tr></table></figure>
-
 <p>这里存储了一些重要信息，例如labels和每次训练时需要的ID列表。</p>
 <p>每次调用都会传入一个样本索引，在<code>__len__</code>方法中为其指定了上界，即数据集的大小。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__len__</span><span class="params">(self)</span>:</span> </span><br><span class="line">    </span><br><span class="line">    <span class="string">'''Denotes the total number of samples</span></span><br><span class="line"><span class="string">    '''</span></span><br><span class="line">    <span class="keyword">return</span> len(self.list_IDs)</span><br></pre></td></tr></table></figure>
-
 <p>现在，当传入样本索引，生成器执行<code>__getitem__</code>方法来生成该索引对应的样本。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__getitem__</span><span class="params">(self, index)</span>:</span></span><br><span class="line">    </span><br><span class="line">    <span class="string">'''Generates one sample of data</span></span><br><span class="line"><span class="string">    '''</span> </span><br><span class="line">    <span class="comment"># Select sample</span></span><br><span class="line">    ID = self.list_IDs[index]</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Load data and get label</span></span><br><span class="line">    X = torch.load(<span class="string">"data/"</span> + ID + <span class="string">".pt"</span>)</span><br><span class="line">    y = self.labels(ID)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> X, y</span><br></pre></td></tr></table></figure>
-
 <p>在数据生成期间，此方法从其对应的文件<code>ID.pt</code>中读取给定示例的Torch张量。本节中描述的步骤相对应的完整代码如下所示。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="keyword">from</span> torch.utils <span class="keyword">import</span> data</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Dataset</span><span class="params">(data.Dataset)</span>:</span></span><br><span class="line">    </span><br><span class="line">    <span class="string">'''Characterizes a dataset for PyTorch</span></span><br><span class="line"><span class="string">    '''</span></span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, list_IDs, labels)</span>:</span></span><br><span class="line">        <span class="string">'''Initialization</span></span><br><span class="line"><span class="string">        '''</span></span><br><span class="line">        self.labels = labels</span><br><span class="line">        self.list_IDs = list_IDs</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__len__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="string">'''Denotes the total number of samples</span></span><br><span class="line"><span class="string">        '''</span></span><br><span class="line">        <span class="keyword">return</span> len(self.list_IDs)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__getitem__</span><span class="params">(self, index)</span>:</span></span><br><span class="line">        <span class="string">'''Generates one sample of data</span></span><br><span class="line"><span class="string">        '''</span></span><br><span class="line">        <span class="comment"># Select sample</span></span><br><span class="line">        ID = self.list_IDs[index]</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Load data and get label</span></span><br><span class="line">        X = torch.load(<span class="string">"data/"</span> + ID + <span class="string">".pt"</span>)</span><br><span class="line">        y = self.labels[ID]</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> X, y</span><br></pre></td></tr></table></figure>
-
 <h2 id="PyTorch-script"><a href="#PyTorch-script" class="headerlink" title="PyTorch script"></a>PyTorch script</h2><p>现在，必须相应地修改PyTorch代码，以便它可以接受我们刚刚创建的生成器。我们使用PyTorch的DataLoader类，除了我们的Dataset类对象之外，它还接受以下重要参数：</p>
 <ul>
-<li><strong>dataset</strong> (<em>Dataset</em>) ： 要加载数据的数据集；</li>
-<li><strong>batch_size</strong>  (<em>int</em>, <em>可选</em>) ： 每一批要加载多少数据（默认：<code>1</code>）；</li>
-<li><strong>shuffle</strong>  (<em>bool</em>, <em>可选</em>) ： 如果每一个epoch内要打乱数据，就设置为<code>True</code>（默认：<code>False</code>）；</li>
-<li><strong>num_workers</strong>  (<em>int</em>, <em>可选</em>) ： 加载数据的子进程数量。0表示主进程加载数据（默认：<code>0</code>）。</li>
+<li><strong>dataset</strong> (_Dataset_) ： 要加载数据的数据集；</li>
+<li><strong>batch_size</strong>  (_int_, _可选_) ： 每一批要加载多少数据（默认：<code>1</code>）；</li>
+<li><strong>shuffle</strong>  (_bool_, _可选_) ： 如果每一个epoch内要打乱数据，就设置为<code>True</code>（默认：<code>False</code>）；</li>
+<li><strong>num_workers</strong>  (_int_, _可选_) ： 加载数据的子进程数量。0表示主进程加载数据（默认：<code>0</code>）。</li>
 </ul>
 <p>下面是一个代码模板：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="keyword">from</span> torch.utils <span class="keyword">import</span> data</span><br><span class="line"><span class="keyword">from</span> my_classes <span class="keyword">import</span> Dataset</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># CUDA for PyTorch</span></span><br><span class="line">use_cuda = torch.cuda.is_available()</span><br><span class="line">device = torch.device(<span class="string">"cuda:0"</span> <span class="keyword">if</span> use_cuda <span class="keyword">else</span> <span class="string">"cpu"</span>)</span><br><span class="line">cudnn.benchmark = <span class="literal">True</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Parameters</span></span><br><span class="line">params = &#123;</span><br><span class="line">    <span class="string">"batch_size"</span>: <span class="number">64</span>,</span><br><span class="line">    <span class="string">"shuffle"</span>: <span class="literal">True</span>,</span><br><span class="line">    <span class="string">"num_workers"</span>: <span class="number">6</span></span><br><span class="line">&#125;</span><br><span class="line">max_epochs = <span class="number">100</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Datasets</span></span><br><span class="line">partition = <span class="comment"># IDs</span></span><br><span class="line">labels = <span class="comment"># Labels</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Generators</span></span><br><span class="line">training_set = Dataset(partition[<span class="string">"train"</span>], labels)</span><br><span class="line">training_generator = data.DataLoader(training_set, **params)</span><br><span class="line"></span><br><span class="line">validation_set = Dataset(partition[<span class="string">"validation"</span>], labels)</span><br><span class="line">validation_generator = data.DataLoader(validation_set, **params)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Loop over epochs</span></span><br><span class="line"><span class="keyword">for</span> epoch <span class="keyword">in</span> range(max_epochs):</span><br><span class="line">    <span class="comment"># Training</span></span><br><span class="line">    <span class="keyword">for</span> local_batch, local_labels <span class="keyword">in</span> training_generator:</span><br><span class="line">        <span class="comment"># Transfer to GPU</span></span><br><span class="line">        local_batch, local_labels = local_batch.to(device), local_labels.to(device)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Model computations</span></span><br><span class="line">        [...]</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Validation</span></span><br><span class="line">    <span class="keyword">with</span> torch.set_grad_enabled(<span class="literal">False</span>):</span><br><span class="line">        <span class="keyword">for</span> local_batch, local_labels <span class="keyword">in</span> validation_generator:</span><br><span class="line">            <span class="comment"># Transfer to GPU</span></span><br><span class="line">            local_batch, local_labels = local_batch.to(device), local_labels.to(device)</span><br><span class="line"></span><br><span class="line">            <span class="comment"># Model computations</span></span><br><span class="line">            [...]</span><br></pre></td></tr></table></figure>
-
 <h1 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h1><p>通过 <code>python3 pytorch_script.py</code> 命令来运行，你将会看到，在训练阶段，数据由CPU并行生成，然后可以将数据feed到GPU进行神经网络计算。</p>
 <h1 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h1><p><a href="https://stanford.edu/~shervine/blog/pytorch-how-to-generate-data-parallel" target="_blank" rel="noopener">A detailed example of how to generate your data in parallel with PyTorch</a></p>
 
@@ -616,7 +607,7 @@
 
 
 
-  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
 
 
 
@@ -716,6 +707,13 @@
   
   
 
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
   
   <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
 <script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
@@ -778,6 +776,26 @@
   
 
   
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
   
 
 

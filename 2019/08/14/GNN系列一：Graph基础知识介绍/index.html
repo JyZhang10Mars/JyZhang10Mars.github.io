@@ -5,7 +5,7 @@
   
 
 
-<html class="theme-next mist use-motion" lang="zh-Hans">
+<html class="theme-next pisces use-motion" lang="zh-Hans">
 <head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -94,7 +94,7 @@
 <meta property="og:image" content="https://res.cloudinary.com/leomars/image/upload/v1565750678/samples/mars/degree_matrix_iydlv3.jpg">
 <meta property="og:image" content="https://res.cloudinary.com/leomars/image/upload/v1565750678/samples/mars/example_flm8nd.jpg">
 <meta property="og:image" content="https://res.cloudinary.com/leomars/image/upload/v1565751960/samples/mars/gnn_fqjxaf.jpg">
-<meta property="og:updated_time" content="2019-08-14T03:21:31.033Z">
+<meta property="og:updated_time" content="2019-08-14T03:39:49.079Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="GNN系列一：Graph基础知识介绍">
 <meta name="twitter:description" content="【导读】图卷积神经网络(Graph Convolutional Network)作为最近几年兴起的一种基于图结构的广义神经网络结构，因为其独特的计算能力，而受到广泛学者的关注与研究。传统深度学习模型 LSTM 和CNN 在欧几里得空间数据(语言，图像，视频等)上取得了不错的成绩，但是在对非欧几里得空间数据(eg：社交网络、知识图谱等)进行处理上却存在一定的局限性。针对该问题，研究者们引入了图论中抽">
@@ -106,7 +106,7 @@
   var NexT = window.NexT || {};
   var CONFIG = {
     root: '/',
-    scheme: 'Mist',
+    scheme: 'Pisces',
     version: '5.1.4',
     sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
     fancybox: true,
@@ -374,10 +374,7 @@
 <p>Written By Mars at 2019/08/14 9:30  Reference：<a href="https://mp.weixin.qq.com/s/sJB4N_ObUqKM8H65yU_1sg" target="_blank" rel="noopener">Datawhale</a></p>
 <h2 id="欧几里得结构化数据"><a href="#欧几里得结构化数据" class="headerlink" title="欧几里得结构化数据"></a>欧几里得结构化数据</h2><h3 id="欧几里得空间"><a href="#欧几里得空间" class="headerlink" title="欧几里得空间"></a>欧几里得空间</h3><p>欧几里德空间(Euclidean Space)，简称为欧氏空间(也可以称为平直空间)，在数学中是对欧几里德所研究的2维和3维空间的一般化。这个一般化把欧几里德对于距离、以及相关的概念长度和角度，转换成任意数维的坐标系。如下图所示。</p>
 <p><img src="https://res.cloudinary.com/leomars/image/upload/v1565747219/samples/mars/euclidean_space_xi63na.jpg" alt></p>
-<center>图 a 表示二维欧几里得空间  图 b 表示三维欧几里得空间</center>
----
-
-<h3 id="常见的欧几里得结构化数据"><a href="#常见的欧几里得结构化数据" class="headerlink" title="常见的欧几里得结构化数据"></a>常见的欧几里得结构化数据</h3><p>将数据转换到欧几里得空间中，所得到的数据称为欧几里得结构化数据。常见的欧几里得结构化数据主要包含：</p>
+<h2 id="图-a-表示二维欧几里得空间-图-b-表示三维欧几里得空间"><a href="#图-a-表示二维欧几里得空间-图-b-表示三维欧几里得空间" class="headerlink" title="图 a 表示二维欧几里得空间  图 b 表示三维欧几里得空间"></a><center>图 a 表示二维欧几里得空间  图 b 表示三维欧几里得空间</center></h2><h3 id="常见的欧几里得结构化数据"><a href="#常见的欧几里得结构化数据" class="headerlink" title="常见的欧几里得结构化数据"></a>常见的欧几里得结构化数据</h3><p>将数据转换到欧几里得空间中，所得到的数据称为欧几里得结构化数据。常见的欧几里得结构化数据主要包含：</p>
 <ul>
 <li><p>1D：声音，时间序列等；</p>
 </li>
@@ -401,13 +398,23 @@
 <h2 id="图-Graph"><a href="#图-Graph" class="headerlink" title="图(Graph)"></a>图(Graph)</h2><h3 id="图-Graph-的引入"><a href="#图-Graph-的引入" class="headerlink" title="图(Graph)的引入"></a>图(Graph)的引入</h3><p>针对非欧几里得机构化数据表示问题，研究者引入了图论中抽象意义上的图(Graph)来表示非欧几里得结构化数据。</p>
 <h3 id="图-Graph-的定义"><a href="#图-Graph-的定义" class="headerlink" title="图(Graph)的定义"></a>图(Graph)的定义</h3><p>图(Graph)的定义为$G=(V,E)$，其结构如下图所示：</p>
 <p><img src="https://res.cloudinary.com/leomars/image/upload/v1565748926/samples/mars/graph_hlft2r.jpg" alt><br>一个有标号的简单图：</p>
-<p>点集$V=\left{1,2,3,4,5,6\right}$；</p>
-<p>边集$E=\left{\left{1,2\right}, \left{1,5\right},\left{2,3\right},\left{2,5\right},\left{3,4\right},\left{4,5\right},\left{4,6\right}\right}$；</p>
-<p>$V=\left{ v_i|i=1,\dots,N\right}$表示顶点或者节点，其中$N$表示节点的个数。$E=\left{e_{ij}|v_i,v_j\in V \right},|E|\le N^2$表示节点与节点之间所连接的边。</p>
-<h3 id="图-Graph-的表示形式"><a href="#图-Graph-的表示形式" class="headerlink" title="图(Graph)的表示形式"></a>图(Graph)的表示形式</h3><h4 id="邻接矩阵-Adjacency-matrix"><a href="#邻接矩阵-Adjacency-matrix" class="headerlink" title="邻接矩阵(Adjacency matrix)"></a>邻接矩阵(Adjacency matrix)</h4><p>邻接矩阵是一个元素为bool值或权值的$N×N$矩阵，该矩阵的定义如下：<br>$$<br>A\in \mathbb{R}^{N \times N}, A_{ij}=<br>\left{<br>    \begin{array}{lr}<br>        a_{ij}\neq 0,e_{ij}\in \mathcal{E} \<br>        0, otherwisw<br>    \end{array}<br>\right.<br>$$<br>若图中存在一条连接顶点$v_i$和$v_j$的边$e_{ij}$，则$a_{ij} \neq 0$，否则为0。当图是稠密时，邻接矩阵是比较合适的表达方法。如下图所示：</p>
+<p>点集$V=\left\{1,2,3,4,5,6\right\}$；</p>
+<p>边集$E=\left\{\left\{1,2\right\}, \left\{1,5\right\},\left\{2,3\right\},\left\{2,5\right\},\left\{3,4\right\},\left\{4,5\right\},\left\{4,6\right\}\right\}$；</p>
+<p>$V=\left\{ v_i|i=1,\dots,N\right\}$表示顶点或者节点，其中$N$表示节点的个数。$E=\left\{e_{ij}|v_i,v_j\in V \right\},|E|\le N^2$表示节点与节点之间所连接的边。</p>
+<h3 id="图-Graph-的表示形式"><a href="#图-Graph-的表示形式" class="headerlink" title="图(Graph)的表示形式"></a>图(Graph)的表示形式</h3><h4 id="邻接矩阵-Adjacency-matrix"><a href="#邻接矩阵-Adjacency-matrix" class="headerlink" title="邻接矩阵(Adjacency matrix)"></a>邻接矩阵(Adjacency matrix)</h4><p>邻接矩阵是一个元素为bool值或权值的$N×N$矩阵，该矩阵的定义如下：</p>
+<script type="math/tex; mode=display">
+A\in \mathbb{R}^{N \times N}, A_{ij}=
+\left\{
+    \begin{array}{lr}
+        a_{ij}\neq 0,e_{ij}\in \mathcal{E} \\ 
+        0, otherwisw
+    \end{array}
+\right.</script><p>若图中存在一条连接顶点$v_i$和$v_j$的边$e_{ij}$，则$a_{ij} \neq 0$，否则为0。当图是稠密时，邻接矩阵是比较合适的表达方法。如下图所示：</p>
 <p><img src="https://res.cloudinary.com/leomars/image/upload/v1565750678/samples/mars/adjacency_matrix_jz1gxw.jpg" alt></p>
-<h4 id="度矩阵-Degree-matrix"><a href="#度矩阵-Degree-matrix" class="headerlink" title="度矩阵( Degree matrix)"></a>度矩阵( Degree matrix)</h4><p>度矩阵(Degree matrix)是一个$D_{ii}$为节点$v_i$的度的对角矩阵，其定义如下所示：<br>$$<br>D\in \mathbb{R}^{N \times N} ,D_{ii}=\Sigma_j A_{ij}<br>$$<br><img src="https://res.cloudinary.com/leomars/image/upload/v1565750678/samples/mars/degree_matrix_iydlv3.jpg" alt></p>
-<h4 id="邻域-Neighborhood"><a href="#邻域-Neighborhood" class="headerlink" title="邻域( Neighborhood)"></a>邻域( Neighborhood)</h4><p>邻域(Neighborhood)表示与某个节点有边连接的点集，其定义如下所示：$\mathcal{N}\left(v_{i}\right)=\left{v_{j} | e_{i j} \in \mathcal{E}\right}$例如，节点1的领域为$\left{2,5\right}$。</p>
+<h4 id="度矩阵-Degree-matrix"><a href="#度矩阵-Degree-matrix" class="headerlink" title="度矩阵( Degree matrix)"></a>度矩阵( Degree matrix)</h4><p>度矩阵(Degree matrix)是一个$D_{ii}$为节点$v_i$的度的对角矩阵，其定义如下所示：</p>
+<script type="math/tex; mode=display">
+D\in \mathbb{R}^{N \times N} ,D_{ii}=\Sigma_j A_{ij}</script><p><img src="https://res.cloudinary.com/leomars/image/upload/v1565750678/samples/mars/degree_matrix_iydlv3.jpg" alt></p>
+<h4 id="邻域-Neighborhood"><a href="#邻域-Neighborhood" class="headerlink" title="邻域( Neighborhood)"></a>邻域( Neighborhood)</h4><p>邻域(Neighborhood)表示与某个节点有边连接的点集，其定义如下所示：$\mathcal{N}\left(v_{i}\right)=\left\{v_{j} | e_{i j} \in \mathcal{E}\right\}$例如，节点1的领域为$\left\{2,5\right\}$。</p>
 <h2 id="图上的学习任务"><a href="#图上的学习任务" class="headerlink" title="图上的学习任务"></a>图上的学习任务</h2><p>介绍完图的基本术语之后，我们来看看有了图结构数据，可以进行哪些机器学习的任务：</p>
 <ol>
 <li><p>图节点分类任务：图中每个节点都有对应的特征，当我们已知一些节点的类别的时候，可以设计分类任务针对未知节点进行分类。接下来要介绍的 GCN、GraphSAGE、GAT模型都是对图上的节点分类。</p>
@@ -587,7 +594,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#欧几里得结构化数据"><span class="nav-number">1.</span> <span class="nav-text">欧几里得结构化数据</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#欧几里得空间"><span class="nav-number">1.1.</span> <span class="nav-text">欧几里得空间</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#常见的欧几里得结构化数据"><span class="nav-number">1.2.</span> <span class="nav-text">常见的欧几里得结构化数据</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#非欧几里得机构化数据"><span class="nav-number">2.</span> <span class="nav-text">非欧几里得机构化数据</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#非欧几里得空间"><span class="nav-number">2.1.</span> <span class="nav-text">非欧几里得空间</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#常见的非欧几里得结构化数据"><span class="nav-number">2.2.</span> <span class="nav-text">常见的非欧几里得结构化数据</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#图-Graph"><span class="nav-number">3.</span> <span class="nav-text">图(Graph)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#图-Graph-的引入"><span class="nav-number">3.1.</span> <span class="nav-text">图(Graph)的引入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#图-Graph-的定义"><span class="nav-number">3.2.</span> <span class="nav-text">图(Graph)的定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#图-Graph-的表示形式"><span class="nav-number">3.3.</span> <span class="nav-text">图(Graph)的表示形式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#邻接矩阵-Adjacency-matrix"><span class="nav-number">3.3.1.</span> <span class="nav-text">邻接矩阵(Adjacency matrix)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#度矩阵-Degree-matrix"><span class="nav-number">3.3.2.</span> <span class="nav-text">度矩阵( Degree matrix)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#邻域-Neighborhood"><span class="nav-number">3.3.3.</span> <span class="nav-text">邻域( Neighborhood)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#图上的学习任务"><span class="nav-number">4.</span> <span class="nav-text">图上的学习任务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#图数据应用举例"><span class="nav-number">5.</span> <span class="nav-text">图数据应用举例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GNN系列规划"><span class="nav-number">6.</span> <span class="nav-text">GNN系列规划</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#必读论文"><span class="nav-number">7.</span> <span class="nav-text">必读论文</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#欧几里得结构化数据"><span class="nav-number">1.</span> <span class="nav-text">欧几里得结构化数据</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#欧几里得空间"><span class="nav-number">1.1.</span> <span class="nav-text">欧几里得空间</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#图-a-表示二维欧几里得空间-图-b-表示三维欧几里得空间"><span class="nav-number">2.</span> <span class="nav-text">图 a 表示二维欧几里得空间  图 b 表示三维欧几里得空间</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#常见的欧几里得结构化数据"><span class="nav-number">2.1.</span> <span class="nav-text">常见的欧几里得结构化数据</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#非欧几里得机构化数据"><span class="nav-number">3.</span> <span class="nav-text">非欧几里得机构化数据</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#非欧几里得空间"><span class="nav-number">3.1.</span> <span class="nav-text">非欧几里得空间</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#常见的非欧几里得结构化数据"><span class="nav-number">3.2.</span> <span class="nav-text">常见的非欧几里得结构化数据</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#图-Graph"><span class="nav-number">4.</span> <span class="nav-text">图(Graph)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#图-Graph-的引入"><span class="nav-number">4.1.</span> <span class="nav-text">图(Graph)的引入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#图-Graph-的定义"><span class="nav-number">4.2.</span> <span class="nav-text">图(Graph)的定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#图-Graph-的表示形式"><span class="nav-number">4.3.</span> <span class="nav-text">图(Graph)的表示形式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#邻接矩阵-Adjacency-matrix"><span class="nav-number">4.3.1.</span> <span class="nav-text">邻接矩阵(Adjacency matrix)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#度矩阵-Degree-matrix"><span class="nav-number">4.3.2.</span> <span class="nav-text">度矩阵( Degree matrix)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#邻域-Neighborhood"><span class="nav-number">4.3.3.</span> <span class="nav-text">邻域( Neighborhood)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#图上的学习任务"><span class="nav-number">5.</span> <span class="nav-text">图上的学习任务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#图数据应用举例"><span class="nav-number">6.</span> <span class="nav-text">图数据应用举例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GNN系列规划"><span class="nav-number">7.</span> <span class="nav-text">GNN系列规划</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#必读论文"><span class="nav-number">8.</span> <span class="nav-text">必读论文</span></a></li></ol></div>
             
 
           </div>
@@ -625,7 +632,7 @@
 
 
 
-  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
 
 
 
@@ -725,6 +732,13 @@
   
   
 
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
   
   <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
 <script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
@@ -787,6 +801,26 @@
   
 
   
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
   
 
 
