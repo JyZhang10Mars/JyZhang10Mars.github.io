@@ -87,7 +87,7 @@
 <meta property="og:description" content="【导读】图卷积神经网络(Graph Convolutional Network)作为最近几年兴起的一种基于图结构的广义神经网络结构，因为其独特的计算能力，而受到广泛学者的关注与研究。传统深度学习模型 LSTM 和CNN 在欧几里得空间数据(语言，图像，视频等)上取得了不错的成绩，但是在对非欧几里得空间数据(eg：社交网络、知识图谱等)进行处理上却存在一定的局限性。针对该问题，研究者们引入了图论中抽">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://res.cloudinary.com/leomars/image/upload/v1565747219/samples/mars/euclidean_space_xi63na.jpg">
-<meta property="og:updated_time" content="2019-08-14T01:51:40.811Z">
+<meta property="og:updated_time" content="2019-08-14T01:57:28.269Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="GNN系列一：Graph基础知识介绍">
 <meta name="twitter:description" content="【导读】图卷积神经网络(Graph Convolutional Network)作为最近几年兴起的一种基于图结构的广义神经网络结构，因为其独特的计算能力，而受到广泛学者的关注与研究。传统深度学习模型 LSTM 和CNN 在欧几里得空间数据(语言，图像，视频等)上取得了不错的成绩，但是在对非欧几里得空间数据(eg：社交网络、知识图谱等)进行处理上却存在一定的局限性。针对该问题，研究者们引入了图论中抽">
@@ -364,12 +364,18 @@
 
       
         <p>【导读】图卷积神经网络(Graph Convolutional Network)作为最近几年兴起的一种基于图结构的广义神经网络结构，因为其独特的计算能力，而受到广泛学者的关注与研究。传统深度学习模型 LSTM 和CNN 在欧几里得空间数据(语言，图像，视频等)上取得了不错的成绩，但是在对非欧几里得空间数据(eg：社交网络、知识图谱等)进行处理上却存在一定的局限性。针对该问题，研究者们引入了图论中抽象意义上的图(Graph)来表示非欧几里得结构化数据。并利用图卷积网络对来图(Graph)数据进行处理，以深入发掘其特征和规律。1、本文首先分别介绍了欧几里得结构化数据和非欧几里得结构化数据特点；2、然后针对非欧几里得结构化数据的表示问题，引入了图论中抽象意义上的图(Graph)概念，并对图(Graph)中一些表示形式进行介绍；3、最后，通过一个简单的例子，对图数据的应用进行介绍，以帮助读者加深对图(Graph)的理解。</p>
-<p>Written By Mars:alien: at 2019/08/14 9:30 :smile:</p>
+<p>Written By Mars at 2019/08/14 9:30 </p>
 <h2 id="欧几里得结构化数据"><a href="#欧几里得结构化数据" class="headerlink" title="欧几里得结构化数据"></a>欧几里得结构化数据</h2><h3 id="欧几里得空间"><a href="#欧几里得空间" class="headerlink" title="欧几里得空间"></a>欧几里得空间</h3><p>欧几里德空间(Euclidean Space)，简称为欧氏空间(也可以称为平直空间)，在数学中是对欧几里德所研究的2维和3维空间的一般化。这个一般化把欧几里德对于距离、以及相关的概念长度和角度，转换成任意数维的坐标系。如下图所示。</p>
 <p><img src="https://res.cloudinary.com/leomars/image/upload/v1565747219/samples/mars/euclidean_space_xi63na.jpg" alt></p>
 <center>图 a 表示二维欧几里得空间  图 b 表示三维欧几里得空间</center>
 
-<h3 id="常见的欧几里得结构化数据"><a href="#常见的欧几里得结构化数据" class="headerlink" title="常见的欧几里得结构化数据"></a>常见的欧几里得结构化数据</h3>
+<h3 id="常见的欧几里得结构化数据"><a href="#常见的欧几里得结构化数据" class="headerlink" title="常见的欧几里得结构化数据"></a>常见的欧几里得结构化数据</h3><p>将数据转换到欧几里得空间中，所得到的数据称为欧几里得结构化数据。常见的欧几里得结构化数据主要包含：</p>
+<ul>
+<li>1D：声音，时间序列等；</li>
+<li>2D：图像等；</li>
+<li>3D：视频，高光谱图像等。</li>
+</ul>
+
       
     </div>
     
