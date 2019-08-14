@@ -79,14 +79,19 @@
 
 
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="tags">
-<meta property="og:url" content="http://yoursite.com/tags/index.html">
+<meta name="description" content="【导读】图卷积神经网络(Graph Convolutional Network)作为最近几年兴起的一种基于图结构的广义神经网络结构，因为其独特的计算能力，而受到广泛学者的关注与研究。传统深度学习模型 LSTM 和CNN 在欧几里得空间数据(语言，图像，视频等)上取得了不错的成绩，但是在对非欧几里得空间数据(eg：社交网络、知识图谱等)进行处理上却存在一定的局限性。针对该问题，研究者们引入了图论中抽">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GNN系列一：Graph基础知识介绍">
+<meta property="og:url" content="http://yoursite.com/2019/08/14/GNN系列一：Graph基础知识介绍/index.html">
 <meta property="og:site_name" content="MARS">
+<meta property="og:description" content="【导读】图卷积神经网络(Graph Convolutional Network)作为最近几年兴起的一种基于图结构的广义神经网络结构，因为其独特的计算能力，而受到广泛学者的关注与研究。传统深度学习模型 LSTM 和CNN 在欧几里得空间数据(语言，图像，视频等)上取得了不错的成绩，但是在对非欧几里得空间数据(eg：社交网络、知识图谱等)进行处理上却存在一定的局限性。针对该问题，研究者们引入了图论中抽">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-08-06T07:50:54.046Z">
+<meta property="og:image" content="https://res.cloudinary.com/leomars/image/upload/v1565747219/samples/mars/euclidean_space_xi63na.jpg">
+<meta property="og:updated_time" content="2019-08-14T01:48:45.620Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="tags">
+<meta name="twitter:title" content="GNN系列一：Graph基础知识介绍">
+<meta name="twitter:description" content="【导读】图卷积神经网络(Graph Convolutional Network)作为最近几年兴起的一种基于图结构的广义神经网络结构，因为其独特的计算能力，而受到广泛学者的关注与研究。传统深度学习模型 LSTM 和CNN 在欧几里得空间数据(语言，图像，视频等)上取得了不错的成绩，但是在对非欧几里得空间数据(eg：社交网络、知识图谱等)进行处理上却存在一定的局限性。针对该问题，研究者们引入了图论中抽">
+<meta name="twitter:image" content="https://res.cloudinary.com/leomars/image/upload/v1565747219/samples/mars/euclidean_space_xi63na.jpg">
 
 
 
@@ -116,13 +121,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/tags/">
+  <link rel="canonical" href="http://yoursite.com/2019/08/14/GNN系列一：Graph基础知识介绍/">
 
 
 
 
 
-  <title>tags | MARS</title>
+  <title>GNN系列一：Graph基础知识介绍 | MARS</title>
   
 
 
@@ -257,40 +262,165 @@
 
   <div id="posts" class="posts-expand">
     
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/14/GNN系列一：Graph基础知识介绍/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="MARS">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/messi.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="MARS">
+    </span>
+
     
-    
-    <div class="post-block page">
       <header class="post-header">
 
-	<h1 class="post-title" itemprop="name headline">tags</h1>
-
-
-
-</header>
-
-      
-      
-      
-      <div class="post-body">
         
         
-          <div class="tag-cloud">
-            <div class="tag-cloud-title">
-                暂无标签
-            </div>
-            <div class="tag-cloud-tags">
+          <h1 class="post-title" itemprop="name headline">GNN系列一：Graph基础知识介绍</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
               
-            </div>
-          </div>
-        
-      </div>
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-14T09:14:43+08:00">
+                2019-08-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/GNN/" itemprop="url" rel="index">
+                    <span itemprop="name">GNN</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
       
       
+
+      
+        <p>【导读】图卷积神经网络(Graph Convolutional Network)作为最近几年兴起的一种基于图结构的广义神经网络结构，因为其独特的计算能力，而受到广泛学者的关注与研究。传统深度学习模型 LSTM 和CNN 在欧几里得空间数据(语言，图像，视频等)上取得了不错的成绩，但是在对非欧几里得空间数据(eg：社交网络、知识图谱等)进行处理上却存在一定的局限性。针对该问题，研究者们引入了图论中抽象意义上的图(Graph)来表示非欧几里得结构化数据。并利用图卷积网络对来图(Graph)数据进行处理，以深入发掘其特征和规律。1、本文首先分别介绍了欧几里得结构化数据和非欧几里得结构化数据特点；2、然后针对非欧几里得结构化数据的表示问题，引入了图论中抽象意义上的图(Graph)概念，并对图(Graph)中一些表示形式进行介绍；3、最后，通过一个简单的例子，对图数据的应用进行介绍，以帮助读者加深对图(Graph)的理解。</p>
+<p>Written By Mars:alien: at 2019/08/14 9:30 :smile:</p>
+<h2 id="欧几里得结构化数据"><a href="#欧几里得结构化数据" class="headerlink" title="欧几里得结构化数据"></a>欧几里得结构化数据</h2><h3 id="欧几里得空间"><a href="#欧几里得空间" class="headerlink" title="欧几里得空间"></a>欧几里得空间</h3><p>欧几里德空间(Euclidean Space)，简称为欧氏空间(也可以称为平直空间)，在数学中是对欧几里德所研究的2维和3维空间的一般化。这个一般化把欧几里德对于距离、以及相关的概念长度和角度，转换成任意数维的坐标系。如下图所示。</p>
+<p><img src="https://res.cloudinary.com/leomars/image/upload/v1565747219/samples/mars/euclidean_space_xi63na.jpg" alt></p>
+<center>图 a 表示二维欧几里得空间  图 b 表示三维欧几里得空间</center>
+
+
       
     </div>
     
     
     
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/08/06/Introduction-to-PyTorch/" rel="next" title="Introduction to PyTorch">
+                <i class="fa fa-chevron-left"></i> Introduction to PyTorch
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
   </div>
 
 
@@ -323,8 +453,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -377,6 +516,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#欧几里得结构化数据"><span class="nav-number">1.</span> <span class="nav-text">欧几里得结构化数据</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#欧几里得空间"><span class="nav-number">1.1.</span> <span class="nav-text">欧几里得空间</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
