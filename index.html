@@ -364,9 +364,7 @@
 
       
         
-          
-          【导读】传统深度学习模型 RNN和CNN 在欧几里得空间数据(语言，图像，视频等)上取得了不错的成绩，但是在对非欧几里得空间数据(eg：社交网络、蛋白质间的相互作用等)进行处理上却存在一定的局限性，例如：CNN的卷积核在非欧几里得结构化数据上无法保持平移不变性，通俗理解就是在拓扑图中每个结点的相邻结点都可能不同，那么当然无法用一个同样尺寸的卷积核来进行卷积运
-          ...
+          <p>传统深度学习模型 RNN和CNN 在欧几里得空间数据(语言，图像，视频等)上取得了不错的成绩，但是在对非欧几里得空间数据(eg：社交网络、蛋白质间的相互作用等)进行处理上却存在一定的局限性，例如：CNN的卷积核在非欧几里得结构化数据上无法保持<font color="red"><strong>平移不变性</strong></font>，通俗理解就是在拓扑图中每个结点的相邻结点都可能不同，那么当然无法用一个同样尺寸的卷积核来进行卷积运算。针对该问题，研究者们引入了图论中抽象意义上的图(Graph)来表示非欧几里得结构化数据，并利用图卷积网络对来图(Graph)数据进行处理，以深入发掘其特征和规律。1、本文首先分别介绍了欧几里得结构化数据和非欧几里得结构化数据特点；2、然后针对非欧几里得结构化数据的表示问题，引入了图论中抽象意义上的图(Graph)概念，并对图(Graph)中一些表示形式进行介绍；3、最后，通过一个简单的例子，对图数据的应用进行介绍，以帮助读者加深对图(Graph)的理解。4、介绍了GNNs原始模型、它的变体和应用场景。</p>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2019/08/14/GNN系列一：GNN基础知识介绍/#more" rel="contents">
@@ -512,11 +510,7 @@
 
       
         
-          
-          Introducing the basics of building a deep learning project using PyTorch, with sample code.
-Written by Mars at 2019/7/31 20:30  
-Prerequisites:AutogradPyTorch是一个基于python的科学计算包，主要针对
-          ...
+          <p>Introducing the basics of building a deep learning project using <a href="https://pytorch.org/" target="_blank" rel="noopener">PyTorch</a>, with sample code.</p>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2019/07/31/Introduction-to-PyTorch/#more" rel="contents">
@@ -662,11 +656,9 @@ Prerequisites:AutogradPyTorch是一个基于python的科学计算包，主要针
 
       
         
-          
-          Translated by Mars at 2019/7/31 17:30
-Motivation你有没有加载一个大型数据集导致内存消耗巨大的经历？你是否希望有一个好的方法来解决这个问题？ 随着不断增长的数据量，大型数据集正日益普遍。
-在某些情况下，即使是最先进的配置也没有足够的内存空间来处理大型数据，这就是为什么需要找到其他方法来有效地完成这项任务的原因。 
-          ...
+          <p>你有没有加载一个大型数据集导致内存消耗巨大的经历？你是否希望有一个好的方法来解决这个问题？ 随着不断增长的数据量，大型数据集正日益普遍。</p>
+<p>在某些情况下，即使是最先进的配置也没有足够的内存空间来处理大型数据，这就是为什么需要找到其他方法来有效地完成这项任务的原因。 在这篇博文中将展示如何实时地在multiple cores上生成数据，并立即将其feed给您的深度学习模型。</p>
+<p>本教程将向您展示如何在PyTorch上执行此操作，其中高效的数据生成方案对于在训练过程中充分利用GPU的全部潜力至关重要。</p>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2019/07/31/PyTorch-Data-Generator/#more" rel="contents">
@@ -812,12 +804,7 @@ Motivation你有没有加载一个大型数据集导致内存消耗巨大的经�
 
       
         
-          
-          Introducing the basics of PyTorch Tensor.
-Written by Mars at 2019/7/30 17:30
-Tensors attributesTensor是表示多维数组的一种数据结构。它类似于NumPyndarray。 它的size相当于NumPyndarray的shape。
-Tensor attributes
-          ...
+          <p>Introducing the basics of PyTorch Tensor.</p>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2019/07/30/The-ABCs-of-PyTorch-Tensor/#more" rel="contents">
@@ -963,12 +950,9 @@ Tensor attributes
 
       
         
-          
-          PyTorch中，所有神经网络的核心是autograd包。
-autograd包为张量上的所有操作提供了自动求导机制。它是一个在运行时定义（define-by-run）的框架，这意味着反向传播是根据代码如何运行来决定的，并且每次迭代可以是不同的.
-让我们用一些简单的例子来看看吧。
-张量torch.Tensor是这个包的核心类。如果设置它的属性 .require
-          ...
+          <p>PyTorch中，所有神经网络的核心是<code>autograd</code>包。</p>
+<p><code>autograd</code>包为张量上的所有操作提供了自动求导机制。它是一个在运行时定义（define-by-run）的框架，这意味着反向传播是根据代码如何运行来决定的，并且每次迭代可以是不同的.</p>
+<p>让我们用一些简单的例子来看看吧。</p>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2019/07/29/Autograd/#more" rel="contents">
@@ -1114,11 +1098,8 @@ autograd包为张量上的所有操作提供了自动求导机制。它是一个
 
       
         
-          
-          Translated by Mars at 2019/7/28 11:30
-IntroductionPython是迄今为止最容易上手的编程语言之一。Python最大的优势之一在于它提供了无穷无尽强大的库。其中许多库核心使用C/C++编写，以提高运行/计算速度，并在顶部使用Python包装器以方便使用！
-Numpy就是这样的一个Python库，Numpy主要用
-          ...
+          <p>Python是迄今为止最容易上手的编程语言之一。Python最大的优势之一在于它提供了无穷无尽强大的库。其中许多库核心使用C/C++编写，以提高运行/计算速度，并在顶部使用Python包装器以方便使用！</p>
+<p>Numpy就是这样的一个Python库，Numpy主要用于数组操作和数据处理。 它的高速度和易于使用的性能使其成为数据科学和机器学习从业者的最爱。这篇文章将是一个Numpy实践教程——学习如何使用Numpy！</p>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2019/07/28/The-Easiest-Python-Numpy-Tutorial-Ever/#more" rel="contents">

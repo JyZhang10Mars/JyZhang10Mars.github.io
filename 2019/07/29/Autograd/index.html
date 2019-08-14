@@ -79,17 +79,17 @@
 
 
 
-<meta name="description" content="PyTorch中，所有神经网络的核心是autograd包。 autograd包为张量上的所有操作提供了自动求导机制。它是一个在运行时定义（define-by-run）的框架，这意味着反向传播是根据代码如何运行来决定的，并且每次迭代可以是不同的. 让我们用一些简单的例子来看看吧。 张量torch.Tensor是这个包的核心类。如果设置它的属性 .requires_grad为True，那么它将会追踪对">
+<meta name="description" content="PyTorch中，所有神经网络的核心是autograd包。 autograd包为张量上的所有操作提供了自动求导机制。它是一个在运行时定义（define-by-run）的框架，这意味着反向传播是根据代码如何运行来决定的，并且每次迭代可以是不同的. 让我们用一些简单的例子来看看吧。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Autograd">
 <meta property="og:url" content="http://yoursite.com/2019/07/29/Autograd/index.html">
 <meta property="og:site_name" content="MARS">
-<meta property="og:description" content="PyTorch中，所有神经网络的核心是autograd包。 autograd包为张量上的所有操作提供了自动求导机制。它是一个在运行时定义（define-by-run）的框架，这意味着反向传播是根据代码如何运行来决定的，并且每次迭代可以是不同的. 让我们用一些简单的例子来看看吧。 张量torch.Tensor是这个包的核心类。如果设置它的属性 .requires_grad为True，那么它将会追踪对">
+<meta property="og:description" content="PyTorch中，所有神经网络的核心是autograd包。 autograd包为张量上的所有操作提供了自动求导机制。它是一个在运行时定义（define-by-run）的框架，这意味着反向传播是根据代码如何运行来决定的，并且每次迭代可以是不同的. 让我们用一些简单的例子来看看吧。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-08-14T08:35:36.788Z">
+<meta property="og:updated_time" content="2019-08-14T11:32:23.265Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Autograd">
-<meta name="twitter:description" content="PyTorch中，所有神经网络的核心是autograd包。 autograd包为张量上的所有操作提供了自动求导机制。它是一个在运行时定义（define-by-run）的框架，这意味着反向传播是根据代码如何运行来决定的，并且每次迭代可以是不同的. 让我们用一些简单的例子来看看吧。 张量torch.Tensor是这个包的核心类。如果设置它的属性 .requires_grad为True，那么它将会追踪对">
+<meta name="twitter:description" content="PyTorch中，所有神经网络的核心是autograd包。 autograd包为张量上的所有操作提供了自动求导机制。它是一个在运行时定义（define-by-run）的框架，这意味着反向传播是根据代码如何运行来决定的，并且每次迭代可以是不同的. 让我们用一些简单的例子来看看吧。">
 
 
 
@@ -374,6 +374,7 @@
         <p>PyTorch中，所有神经网络的核心是<code>autograd</code>包。</p>
 <p><code>autograd</code>包为张量上的所有操作提供了自动求导机制。它是一个在运行时定义（define-by-run）的框架，这意味着反向传播是根据代码如何运行来决定的，并且每次迭代可以是不同的.</p>
 <p>让我们用一些简单的例子来看看吧。</p>
+<a id="more"></a>
 <h2 id="张量"><a href="#张量" class="headerlink" title="张量"></a>张量</h2><p><code>torch.Tensor</code>是这个包的核心类。如果设置它的属性 <code>.requires_grad</code>为<code>True</code>，那么它将会追踪对于该张量的所有操作。当完成计算后可以通过调用<code>.backward()</code>，来自动计算所有的梯度。这个张量的所有梯度将会自动累加到<code>.grad</code>属性。</p>
 <p>要阻止一个张量被跟踪历史，可以调用<code>.detach()</code>方法将其与计算历史分离，并阻止它未来的计算记录被跟踪。</p>
 <p>为了防止跟踪历史记录（和使用内存），可以将代码块包装在<code>with torch.no_grad():</code>中。在评估模型时特别有用，因为模型可能具有<code>requires_grad = True</code>的可训练的参数，但是我们不需要在此过程中对他们进行梯度计算。</p>

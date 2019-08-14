@@ -79,17 +79,17 @@
 
 
 
-<meta name="description" content="Translated by Mars at 2019/7/31 17:30 Motivation你有没有加载一个大型数据集导致内存消耗巨大的经历？你是否希望有一个好的方法来解决这个问题？ 随着不断增长的数据量，大型数据集正日益普遍。 在某些情况下，即使是最先进的配置也没有足够的内存空间来处理大型数据，这就是为什么需要找到其他方法来有效地完成这项任务的原因。 在这篇博文中将展示如何实时地在multi">
+<meta name="description" content="你有没有加载一个大型数据集导致内存消耗巨大的经历？你是否希望有一个好的方法来解决这个问题？ 随着不断增长的数据量，大型数据集正日益普遍。 在某些情况下，即使是最先进的配置也没有足够的内存空间来处理大型数据，这就是为什么需要找到其他方法来有效地完成这项任务的原因。 在这篇博文中将展示如何实时地在multiple cores上生成数据，并立即将其feed给您的深度学习模型。 本教程将向您展示如何在Py">
 <meta property="og:type" content="article">
 <meta property="og:title" content="PyTorch Data Generator">
 <meta property="og:url" content="http://yoursite.com/2019/07/31/PyTorch-Data-Generator/index.html">
 <meta property="og:site_name" content="MARS">
-<meta property="og:description" content="Translated by Mars at 2019/7/31 17:30 Motivation你有没有加载一个大型数据集导致内存消耗巨大的经历？你是否希望有一个好的方法来解决这个问题？ 随着不断增长的数据量，大型数据集正日益普遍。 在某些情况下，即使是最先进的配置也没有足够的内存空间来处理大型数据，这就是为什么需要找到其他方法来有效地完成这项任务的原因。 在这篇博文中将展示如何实时地在multi">
+<meta property="og:description" content="你有没有加载一个大型数据集导致内存消耗巨大的经历？你是否希望有一个好的方法来解决这个问题？ 随着不断增长的数据量，大型数据集正日益普遍。 在某些情况下，即使是最先进的配置也没有足够的内存空间来处理大型数据，这就是为什么需要找到其他方法来有效地完成这项任务的原因。 在这篇博文中将展示如何实时地在multiple cores上生成数据，并立即将其feed给您的深度学习模型。 本教程将向您展示如何在Py">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-08-14T08:30:24.981Z">
+<meta property="og:updated_time" content="2019-08-14T11:31:13.017Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="PyTorch Data Generator">
-<meta name="twitter:description" content="Translated by Mars at 2019/7/31 17:30 Motivation你有没有加载一个大型数据集导致内存消耗巨大的经历？你是否希望有一个好的方法来解决这个问题？ 随着不断增长的数据量，大型数据集正日益普遍。 在某些情况下，即使是最先进的配置也没有足够的内存空间来处理大型数据，这就是为什么需要找到其他方法来有效地完成这项任务的原因。 在这篇博文中将展示如何实时地在multi">
+<meta name="twitter:description" content="你有没有加载一个大型数据集导致内存消耗巨大的经历？你是否希望有一个好的方法来解决这个问题？ 随着不断增长的数据量，大型数据集正日益普遍。 在某些情况下，即使是最先进的配置也没有足够的内存空间来处理大型数据，这就是为什么需要找到其他方法来有效地完成这项任务的原因。 在这篇博文中将展示如何实时地在multiple cores上生成数据，并立即将其feed给您的深度学习模型。 本教程将向您展示如何在Py">
 
 
 
@@ -371,10 +371,11 @@
       
 
       
-        <p>Translated by <strong>Mars</strong> at 2019/7/31 17:30</p>
-<h1 id="Motivation"><a href="#Motivation" class="headerlink" title="Motivation"></a>Motivation</h1><p>你有没有加载一个大型数据集导致内存消耗巨大的经历？你是否希望有一个好的方法来解决这个问题？ 随着不断增长的数据量，大型数据集正日益普遍。</p>
+        <p>你有没有加载一个大型数据集导致内存消耗巨大的经历？你是否希望有一个好的方法来解决这个问题？ 随着不断增长的数据量，大型数据集正日益普遍。</p>
 <p>在某些情况下，即使是最先进的配置也没有足够的内存空间来处理大型数据，这就是为什么需要找到其他方法来有效地完成这项任务的原因。 在这篇博文中将展示如何实时地在multiple cores上生成数据，并立即将其feed给您的深度学习模型。</p>
 <p>本教程将向您展示如何在PyTorch上执行此操作，其中高效的数据生成方案对于在训练过程中充分利用GPU的全部潜力至关重要。</p>
+<a id="more"></a>
+<p>Translated by <strong>Mars</strong> at 2019/7/31 17:30</p>
 <h1 id="Tutorial"><a href="#Tutorial" class="headerlink" title="Tutorial"></a>Tutorial</h1><h2 id="Previous-situation"><a href="#Previous-situation" class="headerlink" title="Previous situation"></a>Previous situation</h2><p>Before reading this article, your PyTorch script probably looked like this:</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Load entire dataset</span></span><br><span class="line">X, y = torch.load(<span class="string">'some_training_set_with_labels.pt'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Train model</span></span><br><span class="line"><span class="keyword">for</span> epoch <span class="keyword">in</span> range(max_epochs):</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(n_batches):</span><br><span class="line">        <span class="comment"># Local batches and labels</span></span><br><span class="line">        local_X, local_y = X[i*n_batches:(i+<span class="number">1</span>)*n_batches,], y[i*n_batches:(i+<span class="number">1</span>)*n_batches,]</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Your model</span></span><br><span class="line">        [...]</span><br></pre></td></tr></table></figure>
 <p>or even this:</p>
@@ -617,7 +618,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Motivation"><span class="nav-number">1.</span> <span class="nav-text">Motivation</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Tutorial"><span class="nav-number">2.</span> <span class="nav-text">Tutorial</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Previous-situation"><span class="nav-number">2.1.</span> <span class="nav-text">Previous situation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Notations"><span class="nav-number">2.2.</span> <span class="nav-text">Notations</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Dataset"><span class="nav-number">2.3.</span> <span class="nav-text">Dataset</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PyTorch-script"><span class="nav-number">2.4.</span> <span class="nav-text">PyTorch script</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Conclusion"><span class="nav-number">3.</span> <span class="nav-text">Conclusion</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Reference"><span class="nav-number">4.</span> <span class="nav-text">Reference</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Tutorial"><span class="nav-number">1.</span> <span class="nav-text">Tutorial</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Previous-situation"><span class="nav-number">1.1.</span> <span class="nav-text">Previous situation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Notations"><span class="nav-number">1.2.</span> <span class="nav-text">Notations</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Dataset"><span class="nav-number">1.3.</span> <span class="nav-text">Dataset</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PyTorch-script"><span class="nav-number">1.4.</span> <span class="nav-text">PyTorch script</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Conclusion"><span class="nav-number">2.</span> <span class="nav-text">Conclusion</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Reference"><span class="nav-number">3.</span> <span class="nav-text">Reference</span></a></li></ol></div>
             
 
           </div>
