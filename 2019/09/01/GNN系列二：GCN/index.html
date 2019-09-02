@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="GCN的概念首次提出于ICLR2017（成文于2016年），文章中提出的模型叫Graph Convolutional Network(GCN)，可以看作是图神经网络的“开山之作”，因为GCN利用了近似的技巧推导出了一个简单而高效的模型，使得图像处理中的卷积操作能够简单地被用到图结构数据处理中来，后面各种图神经网络层出不穷，或多或少都受到这篇文章的启发。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GNN系列二：GCN">
+<meta property="og:url" content="http://yoursite.com/2019/09/01/GNN系列二：GCN/index.html">
+<meta property="og:site_name" content="MARS">
+<meta property="og:description" content="GCN的概念首次提出于ICLR2017（成文于2016年），文章中提出的模型叫Graph Convolutional Network(GCN)，可以看作是图神经网络的“开山之作”，因为GCN利用了近似的技巧推导出了一个简单而高效的模型，使得图像处理中的卷积操作能够简单地被用到图结构数据处理中来，后面各种图神经网络层出不穷，或多或少都受到这篇文章的启发。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-09-02T11:05:29.621Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="GNN系列二：GCN">
+<meta name="twitter:description" content="GCN的概念首次提出于ICLR2017（成文于2016年），文章中提出的模型叫Graph Convolutional Network(GCN)，可以看作是图神经网络的“开山之作”，因为GCN利用了近似的技巧推导出了一个简单而高效的模型，使得图像处理中的卷积操作能够简单地被用到图结构数据处理中来，后面各种图神经网络层出不穷，或多或少都受到这篇文章的启发。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/09/01/GNN系列二：GCN/">
+
+
+
+
+
+  <title>GNN系列二：GCN | MARS</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">MARS</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-schedule">
+          <a href="/schedule/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-calendar"></i> <br>
+            
+            日程表
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/01/GNN系列二：GCN/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="MARS">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/messi.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="MARS">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">GNN系列二：GCN</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-09-01T14:29:52+08:00">
+                2019-09-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/GNN/" itemprop="url" rel="index">
+                    <span itemprop="name">GNN</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/09/01/GNN系列二：GCN/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count gitment-comments-count" data-xid="/2019/09/01/GNN系列二：GCN/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>GCN的概念首次提出于ICLR2017（成文于2016年），文章中提出的模型叫Graph Convolutional Network(GCN)，可以看作是图神经网络的“开山之作”，因为GCN利用了近似的技巧推导出了一个简单而高效的模型，使得图像处理中的卷积操作能够简单地被用到图结构数据处理中来，后面各种图神经网络层出不穷，或多或少都受到这篇文章的启发。</p>
+<a id="more"></a>
+<p>Written By Mars at 2019/09/01 14:30   </p>
+<p>Reference：<a href="https://mp.weixin.qq.com/s/jBQOgP-I4FQT1EU8y72ICA" target="_blank" rel="noopener">Datawhale</a> and <a href="https://arxiv.org/abs/1609.02907" target="_blank" rel="noopener">Semi-supervised classification with graph convolutional networks</a></p>
+<h1 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h1><p>考虑图（例如引文网络）中节点（例如文档）的分类问题，通常这种类型的图中只有一小部分节点有标签，这类问题可以划分到基于图的半监督学习问题中。为了对节点进行分类，首先我们可以利用节点自身的特征信息，除此之外，我们还可以利用图结构信息，因此一个典型的图半监督学习问题可以采用下面的学习策略：</p>
+<script type="math/tex; mode=display">
+\mathcal{L}=\mathcal{L}_{0}+\lambda \mathcal{L}_{\mathrm{reg}}\\
+\mathcal{L}_{\mathrm{reg}}=\sum_{i, j} A_{i j}\left\|f\left(X_{i}\right)-f\left(X_{j}\right)\right\|^{2}=f(X)^{\top} \Delta f(X)</script><p>其中$\mathcal{L}_{0}$表示图中带标签节点的监督损失，$\mathcal{L}_{\mathrm{reg}}$表示图结构信息引入的损失，$f(⋅)$类似于神经网络的可微分函数（即激活函数），$\lambda$为权重系数，$X$为节点特征向量$X_{i}$的矩阵，$\Delta=D-A$表示无向图$\mathcal{G}=(\mathcal{V}, \mathcal{E})$的未正则化图拉普拉斯算子。$\mathcal{G}=(\mathcal{V}, \mathcal{E})$中，节点$v_{i} \in \mathcal{V}$共$N$个，边$(v_{i}, v_{j}) \in \mathcal{E}$，邻接矩阵$A \in \mathbb{R}^{N \times N}$（权重为0，1或者加权），度矩阵$D_{i i}=\sum_{j} A_{i j}$。</p>
+<p>这样的学习策略基于图中的相邻节点标签可能相同的假设。然而，这种假设可能会限制建模能力，因为图的边不一定需要编码节点相似性，而可能包含其他信息。</p>
+<p>因此，本文作者不再显示地定义图结构信息的损失函数$\mathcal{L}_{\mathrm{reg}}$, 而是使用神经网络模型$f(X,A)$直接对图结构进行编码，训练所有带标签的结点$\mathcal{L}_{0}$，来避免损失函数中的正则化项$\mathcal{L}_{\mathrm{reg}}$。在图的邻接矩阵上通过$f(⋅)$允许模型从监督损失 $\mathcal{L}_{0}$ 中获得梯度信息，并使其能够学习到带标签和不带标签的节点的表示。</p>
+<p>这篇文章的主要贡献是为图半监督分类任务设计了一个简单并且效果好的神经网络模型，这个模型由谱图卷积(spectral graph convolution)的一阶近似推导而来，具有理论基础。</p>
+<h1 id="图上的快速卷积近似"><a href="#图上的快速卷积近似" class="headerlink" title="图上的快速卷积近似"></a>图上的快速卷积近似</h1><p>这一节主要介绍图神经网络逐层更新(propagation)的理论推导。多层图卷积网络(Graph Convolutional Network, GCN)的逐层传播公式：</p>
+<script type="math/tex; mode=display">
+H^{(l+1)}=\sigma\left(\tilde{D}^{-\frac{1}{2}} \tilde{A} \tilde{D}^{-\frac{1}{2}} H^{(l)} W^{(l)}\right)</script><p>其中，$\tilde{A} = A + I_{N}$表示无向图$\mathcal{G}$加上了self-connections后的邻接矩阵（防止），$\tilde{D}_{i i} = \sum_{j} \tilde{A}_{i j}$是每个节点的度，$W^{(l)}$是$l^{th}$层可学习的参数，$\sigma(⋅)$表示激活函数。$H^{(l)} \in \mathbb{R}^{N \times D}$是$l^{th}$层经过$\sigma$激活后的节点的Embedding值，其中输入层$H^{(0)} = X$。<strong>这个逐层的更新规则可以由图上的局部谱滤波（Localized spectral filters）的一阶近似推导而来。</strong>（另一种解释是基于Weisfeiler-Lehman算法的，见论文的附录A）</p>
+<h2 id="谱图卷积-Spectral-Graph-Convolutions"><a href="#谱图卷积-Spectral-Graph-Convolutions" class="headerlink" title="谱图卷积(Spectral Graph Convolutions)"></a>谱图卷积(Spectral Graph Convolutions)</h2><p>谱图卷积是这样定义的：信号$x \in \mathbb{R}^{N}$（对每个节点来说是一个标量）乘以傅里叶域的滤波器$g_{\theta}=\operatorname{diag}(\theta), \theta \in \mathbb{R}^{N}$，即：</p>
+<script type="math/tex; mode=display">
+g_{\theta} \star x=U g_{\theta} U^{\top} x</script><p>归一化的图拉普拉斯(normalized graph Laplacian )表示为$L=I_{N}-D^{-1 / 2} A D^{-1 / 2}=U \Lambda U^{T}$。$U$是$L$的特征向量矩阵，而$\Lambda$是对应的特征值矩阵（特征值在对角线上），$ U^{\top} x$是$x$在图上的傅里叶变换。我们能将$g_{\theta}$理解为$L$特征值的一个函数，即$g_{\theta}(\Lambda)$。上面的等式算起来非常耗时，因为特征向量矩阵的乘法是$\mathcal{O}(N^{2})$阶的。再者，$L$的特征分解在大图上也很低效。为了克服这样的问题Hammond et al.（2011）指出$g_{\theta}(\Lambda)$能够被切比雪夫多项式（Chebyshev polynomials）$T_{k}(x)$所近似，$K$阶多项式就能达到很好的近似效果：</p>
+<script type="math/tex; mode=display">
+g_{\theta^{\prime}}(\Lambda) \approx \sum_{k=0}^{K} \theta_{k}^{\prime} T_{k}(\tilde{\Lambda})</script><p>其中$\tilde{\Lambda}=\frac{2}{\lambda_{\max }} \Lambda-I_{N}$，$\lambda_{max}$表示$L$的最大特征值，$\theta^{\prime} \in \mathbb{R}^k$是切比雪夫因子，切比雪夫多项式是由$T_{k}(x)=2 x T_{k-1}(x)-T_{k-2}(x)$递归定义的，其中$T_{0}(x)=1, T_{1}(x)=x$。将切比雪夫近似代入到谱图卷积的公式里：</p>
+<script type="math/tex; mode=display">
+g_{\theta^{\prime}} \star x \approx \sum_{k=0}^{K} \theta_{k}^{\prime} T_{k}(\tilde{L}) x</script><p>其中$\tilde{L}=\frac{2}{\lambda_{\max }} L-I_{N}$,这个表达式现在是 K-localized ,因为这里禁用$K$阶切比雪夫多项式近似$g_{\theta}(\Lambda)$，即每个节点只受$K$步以内的其他节点影响，上式的时间复杂度为$\mathcal{O}(|\mathcal{E}|)$，即与边数是线性的关系。Defferrard et al.（2016）使用这个K-localized来定义图上的卷积操作。</p>
+<h2 id="逐层线性模型"><a href="#逐层线性模型" class="headerlink" title="逐层线性模型"></a>逐层线性模型</h2><p>现在假设限制$K=1$，即谱图卷积近似为一个关于$L$的线性函数。这种情况下仍能通过堆叠多层来得到卷积的能力，但是这时候不再受限于切比雪夫多项式参数的限制。我们期望这样的模型能够缓解当图中节点度分布差异较大时对局部结构过拟合问题，比如社交网络，引文网络，知识图谱等。另一方面，从计算的角度考虑，逐层线性模型使我们可以构建更深的模型。</p>
+<p>在GCN模型中做了另一个近似$\lambda_{max} \approx 2$，可以得到：</p>
+<script type="math/tex; mode=display">
+g_{\theta^{\prime}} \star x \approx \theta_{0}^{\prime} x+\theta_{1}^{\prime}\left(L-I_{N}\right) x=\theta_{0}^{\prime} x-\theta_{1}^{\prime} D^{-\frac{1}{2}} A D^{-\frac{1}{2}} x</script><p>上式有两个参数$\theta_{0}^{\prime}$和$\theta_{1}^{\prime}$，这两个参数可以在整个图中所有节点的计算中共享。实践中可以进一步限制参数的个数能够在一定程度上避免过拟合的问题，并且减少计算量。因此引入$\theta=\theta_{0}^{\prime}=-\theta_{1}^{\prime}$做进一步的近似：</p>
+<script type="math/tex; mode=display">
+g_{\theta} \star x \approx \theta\left(I_{N}+D^{-\frac{1}{2}} A D^{-\frac{1}{2}}\right) x</script><p>注意到现在$I_{N}+D^{-\frac{1}{2}} A D^{-\frac{1}{2}}$的特征值被限制在$[0,2]$中。重复这样的操作会导致数值不稳定性、梯度爆炸以及梯度消失等问题。为了缓解这样的问题，引入了Renormalization：$I_{N}+D^{-\frac{1}{2}} A D^{-\frac{1}{2}} \rightarrow \tilde{D}^{-\frac{1}{2}} \tilde{A} \tilde{D}^{-\frac{1}{2}}$，其中$\tilde{A}=A+I_{N}, \tilde{D}_{i i}=\sum_{j} \tilde{A}_{i j}$。</p>
+<p>把上述定义进一步泛化：输入信号$X \in \mathbb{R}^{N \times C}$，每个输入信号都有$C$个通道（即每个节点有$C$维特征），卷积包括$F$个滤波器(filter)或特征映射(feature maps)，如下：</p>
+<script type="math/tex; mode=display">
+Z=\tilde{D}^{-\frac{1}{2}} \tilde{A} \tilde{D}^{-\frac{1}{2}} X \Theta</script><p>其中$\Theta \in \mathbb{R}^{C \times F}$是filter的参数矩阵，$Z \in \mathbb{R}^{N \times F}$是进行卷积之后的信号矩阵。这样的转换操作的时间复杂度为$\mathcal{O}(|\mathcal{E}| F C)$，因为$\tilde{A}X$能够被高效地以稀疏矩阵和稠密矩阵相乘的形式实现。</p>
+<p>$X$是输入向量，神经网络通常有多层，习惯将$X$不换后的向量计做$H$，表示节点在隐藏层的embedding，其次，习惯将神经网络的参数表示为$W$而不是$\Theta$，输出$Z$会变成下一层的输入，进行这些符号替换之后，多层图神经网络的Embedding更新公式为$H^{(l+1)}=\sigma\left(\tilde{D}^{-\frac{1}{2}} \tilde{A} \tilde{D}^{-\frac{1}{2}} H^{(l)} W^{(l)}\right)$。</p>
+<h1 id="半监督学习节点分类"><a href="#半监督学习节点分类" class="headerlink" title="半监督学习节点分类"></a>半监督学习节点分类</h1><p>针对非欧几里得结构化数据表示问题，研究者们引入了图论中抽象意义上的图(Graph)来表示非欧几里得结构化数据。</p>
+<h2 id="逐层传播公式的解释"><a href="#逐层传播公式的解释" class="headerlink" title="逐层传播公式的解释"></a>逐层传播公式的解释</h2><p>上一节中，从谱图卷积理论中推导得到了GCN是如何逐层更新节点embedding：</p>
+<script type="math/tex; mode=display">
+H^{(l+1)}=\sigma\left(\tilde{D}^{-\frac{1}{2}} \tilde{A} \tilde{D}^{-\frac{1}{2}} H^{(l)} W^{(l)}\right)</script><p>首先对这个公式做一个形象的解释：<strong>每个节点拿到邻居节点信息然后聚合到自身embedding上。</strong>在上面的公式中$\tilde{D}^{-\frac{1}{2}} \tilde{A} \tilde{D}^{-\frac{1}{2}}$可以看成是归一化后的邻接矩阵，$H^{(l)} W^{(l)}$相当于给$l$层所有节点的embedding做了一次线性变换，左乘邻接矩阵表示对于每个节点来说，该节点的特征变为邻居节点特征相加后的结果。</p>
+<h2 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h2><p>下面用一个两层GCN的例子阐述GCN是如何对节点进行分类的，令$\hat{A}=\tilde{D}^{-\frac{1}{2}} \tilde{A} \tilde{D}^{-\frac{1}{2}}$。根据逐层传播公式，这个两层的GCN输出embedding计算公式为：</p>
+<script type="math/tex; mode=display">
+Z=f(X, A)=\operatorname{softmax}\left(\hat{A} \operatorname{ReLU}\left(\hat{A} X W^{(0)}\right) W^{(1)}\right)</script><p>这里$W^{(0)} \in \mathbb{R}^{H \times C}$是权重矩阵，目的是对节点的输入embedding$X$做线性变换（从输入层到隐藏层的变换）。$W^{(1)} \in \mathbb{R}^{H \times F}$是另一个权重矩阵，目的是对第一层变换后的节点embedding再做一次变换（从隐藏层到输出层）。变换结果经过softmax激活函数后输出作为节点的分类结果。对于半监督分类问题，我们在所有带标签的样本上计算损失函数：</p>
+<script type="math/tex; mode=display">
+\mathcal{L}=-\sum_{l \in \mathcal{Y}_{L}} \sum_{f=1}^{F} Y_{l f} \ln Z_{l f}</script><p>这里$Y_{L}$是所有带标签节点的集合，最后在模型训练时通过梯度下降更新$W^{(0)}, W^{(1)}$。</p>
+<h1 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h1><p>由于GCN需要输入整个邻接矩阵$A$和特征矩阵$X$, 因此它是非常耗内存的，论文中作者做了优化，他们将$A$作为稀疏矩阵输入，然后通过实现稀疏矩阵和稠密矩阵相乘的GPU算子来加速计算，然而，即使这样，整个矩阵仍然存在这要被存入内存和显存中的问题，当图规模变大的时候，这种方法是不可取的，在下一篇GraphSAGE的博文中将会介绍如何巧妙的克服这样的问题。<a href="https://github.com/JyZhang10Mars/KarateGCN" target="_blank" rel="noopener">代码实现</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div id="needsharebutton-postbottom">
+            <span class="btn">
+              <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </span>
+          </div>
+        
+        </div>
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/08/14/GNN系列一：GNN基础知识介绍/" rel="next" title="GNN系列一：GNN基础知识介绍">
+                <i class="fa fa-chevron-left"></i> GNN系列一：GNN基础知识介绍
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/messi.jpg" alt="MARS">
+            
+              <p class="site-author-name" itemprop="name">MARS</p>
+              <p class="site-description motion-element" itemprop="description">自由是一种信仰</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/JyZhang10Mars" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="jyzhang.mars@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#引言"><span class="nav-number">1.</span> <span class="nav-text">引言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#图上的快速卷积近似"><span class="nav-number">2.</span> <span class="nav-text">图上的快速卷积近似</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#谱图卷积-Spectral-Graph-Convolutions"><span class="nav-number">2.1.</span> <span class="nav-text">谱图卷积(Spectral Graph Convolutions)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#逐层线性模型"><span class="nav-number">2.2.</span> <span class="nav-text">逐层线性模型</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#半监督学习节点分类"><span class="nav-number">3.</span> <span class="nav-text">半监督学习节点分类</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#逐层传播公式的解释"><span class="nav-number">3.1.</span> <span class="nav-text">逐层传播公式的解释</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#例子"><span class="nav-number">3.2.</span> <span class="nav-text">例子</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#代码实现"><span class="nav-number">4.</span> <span class="nav-text">代码实现</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">MARS</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+      <div id="needsharebutton-float">
+        <span class="btn">
+          <i class="fa fa-share-alt" aria-hidden="true"></i>
+        </span>
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/needsharebutton/needsharebutton.css">
+
+  
+  
+  <script src="/lib/needsharebutton/needsharebutton.js"></script>
+
+  <script>
+    
+      pbOptions = {};
+      
+          pbOptions.iconStyle = "box";
+      
+          pbOptions.boxForm = "horizontal";
+      
+          pbOptions.position = "bottomCenter";
+      
+          pbOptions.networks = "Weibo,Wechat,Douban,QQZone,Twitter,Facebook";
+      
+      new needShareButton('#needsharebutton-postbottom', pbOptions);
+    
+    
+      flOptions = {};
+      
+          flOptions.iconStyle = "box";
+      
+          flOptions.boxForm = "horizontal";
+      
+          flOptions.position = "middleRight";
+      
+          flOptions.networks = "Weibo,Wechat,Douban,QQZone,Twitter,Facebook";
+      
+      new needShareButton('#needsharebutton-float', flOptions);
+    
+  </script>
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>
