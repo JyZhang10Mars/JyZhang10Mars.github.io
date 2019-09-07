@@ -80,16 +80,15 @@
 
 
 <meta property="og:type" content="article">
-<meta property="og:title" content="论文笔记：Graph Convolutional Networks with Argument-Aware Pooling for Event Detection">
-<meta property="og:url" content="http://yoursite.com/2019/09/05/论文笔记：Graph-Convolutional-Networks-with-Argument-Aware-Pooling-for-Event-Detection/index.html">
+<meta property="og:title" content="论文笔记：Jointly Multiple Events Extraction via Attention-based Graph Information Aggregation">
+<meta property="og:url" content="http://yoursite.com/2019/09/06/论文笔记：Jointly-Multiple-Events-Extraction-via-Attention-based-Graph-Information-Aggregation/index.html">
 <meta property="og:site_name" content="MARS">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://res.cloudinary.com/leomars/image/upload/v1567603184/gcnforee_wyuzhu.jpg">
-<meta property="og:image" content="https://res.cloudinary.com/leomars/image/upload/v1567598424/dependent_tree_nlim51.jpg">
-<meta property="og:updated_time" content="2019-09-07T02:15:40.477Z">
+<meta property="og:image" content="https://res.cloudinary.com/leomars/image/upload/v1567821808/jmee_bzkvae.png">
+<meta property="og:updated_time" content="2019-09-07T02:15:48.016Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="论文笔记：Graph Convolutional Networks with Argument-Aware Pooling for Event Detection">
-<meta name="twitter:image" content="https://res.cloudinary.com/leomars/image/upload/v1567603184/gcnforee_wyuzhu.jpg">
+<meta name="twitter:title" content="论文笔记：Jointly Multiple Events Extraction via Attention-based Graph Information Aggregation">
+<meta name="twitter:image" content="https://res.cloudinary.com/leomars/image/upload/v1567821808/jmee_bzkvae.png">
 
 
 
@@ -119,13 +118,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2019/09/05/论文笔记：Graph-Convolutional-Networks-with-Argument-Aware-Pooling-for-Event-Detection/">
+  <link rel="canonical" href="http://yoursite.com/2019/09/06/论文笔记：Jointly-Multiple-Events-Extraction-via-Attention-based-Graph-Information-Aggregation/">
 
 
 
 
 
-  <title>论文笔记：Graph Convolutional Networks with Argument-Aware Pooling for Event Detection | MARS</title>
+  <title>论文笔记：Jointly Multiple Events Extraction via Attention-based Graph Information Aggregation | MARS</title>
   
 
 
@@ -272,7 +271,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/05/论文笔记：Graph-Convolutional-Networks-with-Argument-Aware-Pooling-for-Event-Detection/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/06/论文笔记：Jointly-Multiple-Events-Extraction-via-Attention-based-Graph-Information-Aggregation/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="MARS">
@@ -289,7 +288,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">论文笔记：Graph Convolutional Networks with Argument-Aware Pooling for Event Detection</h1>
+          <h1 class="post-title" itemprop="name headline">论文笔记：Jointly Multiple Events Extraction via Attention-based Graph Information Aggregation</h1>
         
 
         <div class="post-meta">
@@ -301,8 +300,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-09-05T09:55:18+08:00">
-                2019-09-05
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-09-06T09:59:57+08:00">
+                2019-09-06
               </time>
             
 
@@ -342,8 +341,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2019/09/05/论文笔记：Graph-Convolutional-Networks-with-Argument-Aware-Pooling-for-Event-Detection/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count gitment-comments-count" data-xid="/2019/09/05/论文笔记：Graph-Convolutional-Networks-with-Argument-Aware-Pooling-for-Event-Detection/" itemprop="commentsCount"></span>
+                <a href="/2019/09/06/论文笔记：Jointly-Multiple-Events-Extraction-via-Attention-based-Graph-Information-Aggregation/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count gitment-comments-count" data-xid="/2019/09/06/论文笔记：Jointly-Multiple-Events-Extraction-via-Attention-based-Graph-Information-Aggregation/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -371,44 +370,52 @@
       
 
       
-        <p><img src="https://res.cloudinary.com/leomars/image/upload/v1567603184/gcnforee_wyuzhu.jpg" alt></p>
+        <p><img src="https://res.cloudinary.com/leomars/image/upload/v1567821808/jmee_bzkvae.png" alt></p>
 <a id="more"></a>
-<p>Written By Mars at 2019/09/04 18:30   </p>
-<p>Reference：<a href="https://www.aaai.org/ocs/index.php/AAAI/AAAI18/paper/viewPaper/16329" target="_blank" rel="noopener">Graph Convolutional Networks with Argument-Aware Pooling for Event<br>  Detection</a></p>
-<h1 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h1><p>本文提出一个基于句法依存树的图卷积神经网络模型用于事件检测，解决了长距离非连续的信息依赖问题。<strong>这个模型最大的创新点是首次在神经网络中引入句法结构特征，在句法依存图上执行卷积操作。</strong>句法依存图是通过句法依存树转换得到的——有向边变为无向边且添加自循环边，然后在句法依存图上建模图卷积网络（GCN）进行触发词的识别和分类。GCN模型大致有两种结构：一是先做图embedding转化成序列格式，然后执行传统的平面卷积操作；二是借鉴卷积核局部加权求和的思想，对图中的任一顶点及其邻域进行加权求和，以达到抽取特征的目的。本文采用的是第二种结构的GCN模型，通过对候选词及其句法邻域词进行卷积操作，建模最直接的信息依赖。<strong>此外，本文还提出了基于实体提及的池化操作（ENTITY），进一步提升了事件检测的效果。</strong></p>
-<h1 id="Research-Objective"><a href="#Research-Objective" class="headerlink" title="Research Objective"></a>Research Objective</h1><p>使用GCN来进行事件抽取（触发词的识别和分类）。</p>
-<h1 id="Problem-Statement"><a href="#Problem-Statement" class="headerlink" title="Problem Statement"></a>Problem Statement</h1><ol>
-<li>长距离非连续的信息依赖问题：如下图所示，有两个一样的触发词”fired”，但是它们的类型不同，第一个”fired”的类型是<strong><em>Attack</em></strong>，第二个”fired”的类型是<strong><em>End-Position</em></strong>。在这个例子中，针对第二个”fired”，不同三元组的选择，例如选择”car was fired”而不是”officer was fired”，则会将”fired”识别为<strong><em>Attack</em></strong>类型，这也是造成NCNN等模型在这种情况下无法预测出正确的事件类型<strong><em>End-Position</em></strong>的原因之一；</li>
-<li>实体类别影响事件触发词的类型：在判断”fired”的类型的时，”officer”以及”car”这两个与”fired”相关的实体类别对于判断”fired”的类型有重要作用（VEHICLE：”car”，PERSON：”officer”）。</li>
-</ol>
-<p><img src="https://res.cloudinary.com/leomars/image/upload/v1567598424/dependent_tree_nlim51.jpg" alt></p>
-<h1 id="Method-s"><a href="#Method-s" class="headerlink" title="Method(s)"></a>Method(s)</h1><p>针对以上两个问题，文章分别提出了对应的解决方法：</p>
+<p>Written By Mars at 2019/09/06 18:30   </p>
+<p>Reference：<a href="https://arxiv.org/pdf/1809.09078" target="_blank" rel="noopener">Jointly Multiple Events Extraction via Attention-based Graph Information<br>  Aggregation</a></p>
+<h1 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h1><p>本文的作者提出了从一个句子中抽取多个Triggers的JMEE模型，以此来提升对事件类型判别的准确度。另外，相比较DBRNN的Dependency Bridge，JMEE从另一个角度对句子中的长距离依赖给出了解决方案：使用句法上的捷径弧(shotcut arcs)。为了有效使用shotcut arcs，JMEE使用了图卷积网络(GCN)模型来生成每个单词（图中的节点）的向量表示，最后使用self-attention来同时对多个triggers及其arguments进行提取。</p>
+<h1 id="Research-Objective"><a href="#Research-Objective" class="headerlink" title="Research Objective"></a>Research Objective</h1><p>从一个句子中抽取多个Triggers以及对应的Arguments，联合模型。</p>
+<h1 id="Problem-Statement"><a href="#Problem-Statement" class="headerlink" title="Problem Statement"></a>Problem Statement</h1><p>作者首先说明了许多句子中都存在不止一个trigger（特别地，ACE数据集中有大约26%的句子都存在不止一个trigger），而如果能获得句子中所有的triggers，能更有效地判断事件类型，例如下面的句子：</p>
+<blockquote>
+<p><em>“He <strong>left</strong> the company, and planned to <strong>go</strong> home directly”</em></p>
+</blockquote>
+<p>如果只观察到了事件的触发词left，事件可能的类型有<strong>Transport</strong>或<strong>End-Position</strong>，但是如果识别出了第二个触发词go，就能确定这是一个<strong>Tansport</strong>类型的事件。</p>
+<p>多个事件之间的联系。</p>
+<h1 id="Method-s"><a href="#Method-s" class="headerlink" title="Method(s)"></a>Method(s)</h1><p>JMEE模型框架由以下四个部分构成：</p>
 <ol>
-<li>采用了GCN模型来处理长距离非连续的信息依赖问题；</li>
-<li>Entity Mention；<ul>
-<li>在输入特征中加入实体类型信息（实体类型embedding）；</li>
-<li>基于实体提及的池化操作（ENTITY）。</li>
-</ul>
-</li>
-<li>针对实体之间的关系的不同对触发词识别的作用差异提出了边权重。</li>
+<li>词向量表示的学习；</li>
+<li>句法GCN的生成，在有shotcut arcs的网络结构中进行卷积操作；</li>
+<li>使用Self-Attention捕捉多个triggers之间的联系并进行Trigger Classification；</li>
+<li>Argument Role Classification。</li>
 </ol>
-<h1 id="Evaluation"><a href="#Evaluation" class="headerlink" title="Evaluation"></a>Evaluation</h1><p>数据集：ACE2005，TAC KBP 2015</p>
+<h2 id="Word-Representation"><a href="#Word-Representation" class="headerlink" title="Word Representation"></a>Word Representation</h2><p>每个单词的词向量由以下部分拼接而成：</p>
+<ol>
+<li>使用GloVe预训练的词向量查找表，找到当前词对应的向量表示；</li>
+<li>一个随机初始化的位置标签（表征当前单词所在的位置）；</li>
+<li>当前单词之前的一部分单词的位置标签所构成的向量；</li>
+<li>当前词的命名实体类型所对应的向量。</li>
+</ol>
+<p>这样，每个单词的词向量表示中能够同时反映出当前词的语义特征、位置特征、相对位置特征以及类型特征。</p>
+<h2 id="Syntactic-Graph-Convolution-Network"><a href="#Syntactic-Graph-Convolution-Network" class="headerlink" title="Syntactic Graph Convolution Network"></a>Syntactic Graph Convolution Network</h2><p>首先生成一个有向图来表示一个句子的语法解析树：图中的每个节点表征每个单词，节点之间的边$(i,j)$表示$w_i$与$w_j$之间有直接的语法弧，每个节点到自身也有一个弧。为了允许信息的反向流动，也要生成一个镜像的反向语法解析树，其结构不变，边的方向相反。</p>
+<p>由此定义一个句法卷积网络图的第$k$层的第$v$个节点的计算公式如下：</p>
+<script type="math/tex; mode=display">
+h_V^{(k+1)}=f(\sum_{u\in\mathcal{N}(v)}(W^{(k)}_{K(u,v)}h_u^{(k)}+b^{(k)}_{K(u,v)})</script><p>其中$K(u,v)$表示边$(u,v)$的类型，取值为 <strong>正向(along)，反向(reverse)与循环(loop)</strong> 三种，而$\mathcal{N}$是节点$v$所有相邻点（包括自己）的集合，$f$是预先定义的激活函数。该更新公式的直观解释为：使用某节点邻居与自身的状态的加权结果来作为当前节点的下一个状态。</p>
+<p>此外，对于每条边$(u,v)$使用gate来约束该边的权重，以避免句法结构中的噪声。另外文中还对最初输入GCN的向量做了一些预处理。</p>
+<h2 id="Self-Attention-Trigger-Classification"><a href="#Self-Attention-Trigger-Classification" class="headerlink" title="Self-Attention Trigger Classification"></a>Self-Attention Trigger Classification</h2><p>传统的事件抽取模型在该步一般使用max-pooling或一些变种来进行信息的聚合，但是作者发现在GCN模块中max-pooling效果并不好，所以选择了self-attention机制。</p>
+<p>首先计算一个句子中每个单词的$\mathrm{score}=\mathrm{norm}(\mathrm{exp}(W_2f(W_1D+b_1)+b_2))$，然后使用获得的得分矩阵来更新的向量表示，最后进行一层全连接后使用softmax映射到所有trigger type的概率。</p>
+<h2 id="Argument-Classification"><a href="#Argument-Classification" class="headerlink" title="Argument Classification"></a>Argument Classification</h2><p>每当获得一个符合条件的trigger之后，都要执行一次Argument Classification过程。对于某个trigger的向量表示$T_i$与某个argument candidate及其向量表示$E_j$，在序列长度维度中执行average pooling，并通过一层全连接，最后由softmax函数映射到所有role type的概率。</p>
+<h2 id="Biased-Loss-Function"><a href="#Biased-Loss-Function" class="headerlink" title="Biased Loss Function"></a>Biased Loss Function</h2><p>为了解决数据的稀疏性，采用如下的损失函数（增加了bias）：</p>
+<script type="math/tex; mode=display">
+\begin{aligned} J(\theta)=-\sum_{p=1}^{N} \left(\sum_{i=1}^{n_{p}} I\left(y_{t_{i}}\right) \log \left(p\left(y_{t_{i}} | \theta\right)\right)\right.\left.+\beta \sum_{i=1}^{t_{p}} \sum_{j=1}^{e_{p}} \log \left(p\left(y_{a_{i j}} | \theta\right)\right)\right) \end{aligned}</script><h1 id="Evaluation"><a href="#Evaluation" class="headerlink" title="Evaluation"></a>Evaluation</h1><p>数据集：ACE2005</p>
 <p>评价指标：P，R，F1</p>
 <p>实验分为两个部分：</p>
 <ol>
-<li>根据输入特征有没有经过BiLSTM和GCN的层数K（即调数）对模型进行了测试；</li>
-<li>对本文提出的基于实体提及的池化操作和另外三类常见的池化操作进行了对比；</li>
-<li>Baseline对比。</li>
+<li>Baseline对比；</li>
+<li>JMEE在一个句子中抽取多个Triggers的性能。</li>
 </ol>
-<h1 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h1><p>该论文提出一个基于句法依存树的图卷积神经网络模型用于事件检测，解决了长距离非连续的信息依赖问题，该模型在两个常用数据集（ ACE 2005和TAC KBP 2015）上取得了最好的结果。</p>
-<h1 id="Notes"><a href="#Notes" class="headerlink" title="Notes"></a>Notes</h1><ol>
-<li>本文没有给出模型图，这里开篇给出一个简单的模型图，以助于理解；</li>
-<li>论文代码复现：<ul>
-<li>word embeddings, position embeddings and entity type embeddings；</li>
-<li>获取句法依存图，Dependency parsing。</li>
-</ul>
-</li>
-</ol>
+<h1 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h1><p>作者将JMEE模型与DMCNN、JRNN、DBRNN等模型进行了比较，可以看出JMEE在Trigger的识别与分类任务中的$F_1$值相较其他模型有了显著的提升，对Argument的识别与分类上有一定的效果，但提升幅度不大。</p>
+<h1 id="Notes"><a href="#Notes" class="headerlink" title="Notes"></a>Notes</h1><p><a href="https://github.com/lx865712528/JMEE" target="_blank" rel="noopener">JMEE代码</a></p>
 
       
     </div>
@@ -448,8 +455,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/09/03/GNN系列三：GraphSAGE/" rel="next" title="GNN系列三：GraphSAGE">
-                <i class="fa fa-chevron-left"></i> GNN系列三：GraphSAGE
+              <a href="/2019/09/05/论文笔记：Graph-Convolutional-Networks-with-Argument-Aware-Pooling-for-Event-Detection/" rel="next" title="论文笔记：Graph Convolutional Networks with Argument-Aware Pooling for Event Detection">
+                <i class="fa fa-chevron-left"></i> 论文笔记：Graph Convolutional Networks with Argument-Aware Pooling for Event Detection
               </a>
             
           </div>
@@ -458,8 +465,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2019/09/06/论文笔记：Jointly-Multiple-Events-Extraction-via-Attention-based-Graph-Information-Aggregation/" rel="prev" title="论文笔记：Jointly Multiple Events Extraction via Attention-based Graph Information Aggregation">
-                论文笔记：Jointly Multiple Events Extraction via Attention-based Graph Information Aggregation <i class="fa fa-chevron-right"></i>
+              <a href="/2019/09/07/事件抽取16-18发展综述/" rel="prev" title="事件抽取16-18发展综述">
+                事件抽取16-18发展综述 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -608,7 +615,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Summary"><span class="nav-number">1.</span> <span class="nav-text">Summary</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Research-Objective"><span class="nav-number">2.</span> <span class="nav-text">Research Objective</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Problem-Statement"><span class="nav-number">3.</span> <span class="nav-text">Problem Statement</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Method-s"><span class="nav-number">4.</span> <span class="nav-text">Method(s)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Evaluation"><span class="nav-number">5.</span> <span class="nav-text">Evaluation</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Conclusion"><span class="nav-number">6.</span> <span class="nav-text">Conclusion</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Notes"><span class="nav-number">7.</span> <span class="nav-text">Notes</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Summary"><span class="nav-number">1.</span> <span class="nav-text">Summary</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Research-Objective"><span class="nav-number">2.</span> <span class="nav-text">Research Objective</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Problem-Statement"><span class="nav-number">3.</span> <span class="nav-text">Problem Statement</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Method-s"><span class="nav-number">4.</span> <span class="nav-text">Method(s)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Word-Representation"><span class="nav-number">4.1.</span> <span class="nav-text">Word Representation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Syntactic-Graph-Convolution-Network"><span class="nav-number">4.2.</span> <span class="nav-text">Syntactic Graph Convolution Network</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Self-Attention-Trigger-Classification"><span class="nav-number">4.3.</span> <span class="nav-text">Self-Attention Trigger Classification</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Argument-Classification"><span class="nav-number">4.4.</span> <span class="nav-text">Argument Classification</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Biased-Loss-Function"><span class="nav-number">4.5.</span> <span class="nav-text">Biased Loss Function</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Evaluation"><span class="nav-number">5.</span> <span class="nav-text">Evaluation</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Conclusion"><span class="nav-number">6.</span> <span class="nav-text">Conclusion</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Notes"><span class="nav-number">7.</span> <span class="nav-text">Notes</span></a></li></ol></div>
             
 
           </div>
